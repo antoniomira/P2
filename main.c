@@ -44,6 +44,8 @@ int main()
 	printf("\n¿Cuántas iteraciones de búsqueda desea? ");
 	scanf("%i", &iteraciones);
 
+	// zona martin
+
 	
 	return 0;
 }
