@@ -11,7 +11,7 @@
 #define YFOLD "Y.txt"
 
 // DEFINICION DE LAS FUNCIONES
-void guardarMatrices(double **matriz, int filas, int columnas, char *ruta);
+int guardarMatrices(double **matriz, int filas, int columnas, char *ruta);
 
 int main()
 {
@@ -57,7 +57,7 @@ int main()
 }
 
 // FUNCION GUARDAR MATRICES
-void guardarMatrices(double **matriz, int filas, int columnas, char *ruta)
+int guardarMatrices(double **matriz, int filas, int columnas, char *ruta)
 {
 	// DECLARACION E INICIALIZACION DE MEMORIA
 	FILE *f;
@@ -75,7 +75,7 @@ void guardarMatrices(double **matriz, int filas, int columnas, char *ruta)
 		// GRABO LINIEA A LINEA LA MATRIZ
 		for (i = 0; i < filas; ++i)
 		{
-			fwrite(ruta[i], sizeof(unsigned char), filas, f);
+			fwrite(ruta[i], sizeof(double), filas, f);
 		}
 	}
 
