@@ -3,6 +3,13 @@
 #include <math.h>
 #include <string.h>
 
+#define XMIN 0.0
+#define XMAX 10.0
+#define YMIN 100.0
+#define YMAX 500.0
+#define YFOLD "X.txt"
+#define YFOLD "Y.txt"
+
 int main()
 {
 	// Declaración de variables
