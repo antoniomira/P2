@@ -16,6 +16,7 @@
 int guardarMatrices(double **matriz, int filas, char *ruta);
 void crearMatriz(double **matriz, int filas, int columnas,  double maximo, double minimo);
 double** declararMatriz(int filas, int columnas);
+void liberarMemoriaMatriz(double** matriz, int filas);
 
 int main()
 {
@@ -65,7 +66,13 @@ int main()
 
     X = declararMatriz(n,m);
     crearMatriz(X, n, m, espectroMaximo, espectroMinimo);
+
+	Y = declararMatriz(n,m);
+    crearMatriz(Y, n, m, espectroMaximo, espectroMinimo);
     
+	liberarMemoriaMatriz(X, n);
+	liberarMemoriaMatriz(Y, n);
+
     return 0;
 }
 
@@ -109,8 +116,6 @@ void crearMatriz(double **matriz, int filas, int columnas,  double maximo, doubl
     {
         for (j=0; j<columnas; j++) //para desplazarse por las filas
         {
-            //numero = (double)rand()/(double)(RAND_MAX/maximo);
-
             do {
                 numero = (double)rand()/(double)(RAND_MAX/maximo);
             } while(!(numero > minimo && numero < maximo));
@@ -140,4 +145,16 @@ double** declararMatriz(int filas, int columnas)
 	}
 
 	return aux;
+}
+
+void liberarMemoriaMatriz(double** matriz, int filas)
+{
+	int i = 0;
+
+	for(i = 0; i < filas; i++)
+	{
+		free(matriz[i]);
+	}
+
+	free(matriz);
 }
