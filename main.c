@@ -13,7 +13,7 @@
 #define YFOLD "Y.txt"
 
 // DEFINICION DE LAS FUNCIONES
-int guardarMatrices(double **matriz, int filas, char *ruta);
+int guardarMatrices(double **matriz, int filas, int columnas, char *ruta);
 void crearMatriz(double **matriz, int filas, int columnas,  double maximo, double minimo);
 double** declararMatriz(int filas, int columnas);
 void liberarMemoriaMatriz(double** matriz, int filas);
@@ -67,6 +67,8 @@ int main()
     X = declararMatriz(n,m);
     crearMatriz(X, n, m, espectroMaximo, espectroMinimo);
 
+	guardarMatrices(X, n, m,XFOLD);
+
 	Y = declararMatriz(n,m);
     crearMatriz(Y, n, m, espectroMaximo, espectroMinimo);
     
@@ -77,14 +79,15 @@ int main()
 }
 
 // FUNCION GUARDAR MATRICES
-/*int guardarMatrices(double **matriz, int filas, char *ruta)
+int guardarMatrices(double **matriz, int filas, int columnas, char *ruta)
 {
 	// DECLARACION E INICIALIZACION DE MEMORIA
 	FILE *f;
-	int i = 0;
+	int i = 0,
+		j = 0;
 
 	// ABRO EL FICHERO
-	f = fopen(ruta, "wb");
+	f = fopen(ruta, "w");
 	if (f == NULL)
 	{
 		printf("ERROR, el fichero no existe o no se ha podido abrir\n");
@@ -92,10 +95,16 @@ int main()
 	}
 	else
 	{
-		// GRABO LINIEA A LINEA LA MATRIZ
+		// GRABO LINEA A LINEA LA MATRIZ
 		for (i = 0; i < filas; ++i)
 		{
-			fwrite(ruta[i], sizeof(double), filas, f);
+			for( j = 0; j < columnas-1; j++)
+			{
+				fprintf( f, "%.2lf, ", matriz[i][j]);	
+			}
+			
+			fprintf( f, "%.2lf\n", matriz[i][j]);
+			// fwrite(matriz[i], sizeof(double),columnas, f);
 		}
 	}
 
@@ -105,7 +114,7 @@ int main()
 		printf("Error: fichero NO CERRADO\n");
 		return 1;
 	}
-}*/
+}
 
 void crearMatriz(double **matriz, int filas, int columnas,  double maximo, double minimo){
     int i = 0,
