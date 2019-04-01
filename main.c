@@ -9,25 +9,28 @@
 #define XMAX 10.0
 #define YMIN 100.0
 #define YMAX 500.0
-#define YFOLD "X.txt"
+#define XFOLD "X.txt"
 #define YFOLD "Y.txt"
 
 // DEFINICION DE LAS FUNCIONES
-int guardarMatrices(double **matriz, int filas, int columnas, char *ruta);
-void crearMatriz(double matriz[10][10], int filas, int columnas,  double maximo, double minimo);
+int guardarMatrices(double **matriz, int filas, char *ruta);
+void crearMatriz(double **matriz, int filas, int columnas,  double maximo, double minimo);
+double** declararMatriz(int filas, int columnas);
 
 int main()
 {
+	// Declaración e iniciación de variables
     int s = 10, // Cantidad de salidas 
         m = 10, // Cantidad de entradas
-    // Declaración de variables
-        n = 0, // Empresas que se van a utilizar
+        n = 10, // Empresas que se van a utilizar
         k = 0, // Empresa que se va a analizar
         iteraciones = 0; // Cantidad de iteraciones que se desean hacer
 
     double espectroMinimo = 0.0, // Valor mínimo a buscar
         espectroMaximo = 0.0, // Valor máximo a buscar
-        *theta; // Declaramos el puntero
+        *theta, // Declaramos el puntero
+		**X,
+		**Y;
 
 
     // Se asigna el tamaño del vector theta
@@ -60,16 +63,14 @@ int main()
     printf("\n¿Cuántas iteraciones de búsqueda desea? ");
     scanf("%i", &iteraciones);
 
-    // zona martin
-    //zona ximo
-    double matriz[10][10];
-    crearMatriz(matriz, n, m, espectroMaximo, espectroMinimo);
+    X = declararMatriz(n,m);
+    crearMatriz(X, n, m, espectroMaximo, espectroMinimo);
     
     return 0;
 }
 
 // FUNCION GUARDAR MATRICES
-int guardarMatrices(double **matriz, int filas, int columnas, char *ruta)
+/*int guardarMatrices(double **matriz, int filas, char *ruta)
 {
 	// DECLARACION E INICIALIZACION DE MEMORIA
 	FILE *f;
@@ -97,20 +98,23 @@ int guardarMatrices(double **matriz, int filas, int columnas, char *ruta)
 		printf("Error: fichero NO CERRADO\n");
 		return 1;
 	}
-}
+}*/
 
-void crearMatriz(double matriz[10][10], int filas, int columnas,  double maximo, double minimo){
-    double numero = 0;
+void crearMatriz(double **matriz, int filas, int columnas,  double maximo, double minimo){
+    int i = 0,
+		j = 0;
+	double numero = 0;
 
-    for (int i=0; i<columnas; i++) //para desplazarse por las columnas
+    for (i=0; i<filas; i++) //para desplazarse por las columnas
     {
-        for (int j=0; j<filas; j++) //para desplazarse por las filas
+        for (j=0; j<columnas; j++) //para desplazarse por las filas
         {
-            numero = (double)rand()/(double)(RAND_MAX/maximo);
+            //numero = (double)rand()/(double)(RAND_MAX/maximo);
 
-            while(numero < minimo || numero > maximo){
+            do {
                 numero = (double)rand()/(double)(RAND_MAX/maximo);
-            }
+            } while(!(numero > minimo && numero < maximo));
+			
 
             matriz[i][j]=numero; //Agrega numero aleatorio a la posicion ij de la matriz
 
@@ -118,4 +122,22 @@ void crearMatriz(double matriz[10][10], int filas, int columnas,  double maximo,
         }
       printf("\n\n");//para dejar espacios entre filas.
     }
+}
+
+double** declararMatriz(int filas, int columnas)
+{
+	// Puntero auxiliar para declarar la matriz
+	double **aux;
+
+	// Variables para iterar
+	int i = 0;
+
+	aux = (double**) malloc(sizeof(double*)*filas);
+
+	for(i = 0; i < filas; i++)
+	{
+		aux[i] = (double*) malloc(sizeof(double)*columnas);
+	}
+
+	return aux;
 }
