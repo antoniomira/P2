@@ -63,14 +63,17 @@ int main()
     // Cantidad de iteraciones = a cantidad de soluciones
     printf("\n¿Cuántas iteraciones de búsqueda desea? ");
     scanf("%i", &iteraciones);
-
     X = declararMatriz(n,m);
-    crearMatriz(X, n, m, espectroMaximo, espectroMinimo);
+
+	// printf("Llega aqui");
+    crearMatriz(X, n, m, XMAX, XMIN);
 
 	guardarMatrices(X, n, m,XFOLD);
 
-	Y = declararMatriz(n,m);
-    crearMatriz(Y, n, m, espectroMaximo, espectroMinimo);
+	Y = declararMatriz(n,s);
+    crearMatriz(Y, n, s, YMAX, YMIN);
+
+	guardarMatrices(Y, n, s,YFOLD);
     
 	liberarMemoriaMatriz(X, n);
 	liberarMemoriaMatriz(Y, n);
@@ -145,12 +148,12 @@ double** declararMatriz(int filas, int columnas)
 
 	// Variables para iterar
 	int i = 0;
-
+	
 	aux = (double**) malloc(sizeof(double*)*filas);
-
+	
 	for(i = 0; i < filas; i++)
 	{
-		aux[i] = (double*) malloc(sizeof(double)*columnas);
+		aux[i] = (double*) malloc(sizeof(double)*columnas);		
 	}
 
 	return aux;
