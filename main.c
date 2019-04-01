@@ -1,24 +1,26 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <string.h>
+
+// DEFINICION DE LAS FUNCIONES
+void guardarMatrices(double **matriz, int filas, int columnas, char *ruta);
 
 int main()
 {
 	// Declaración de variables
-	int s = 0, // Cantidad de salidas 
-		m = 0, // Cantidad de entradas
-		n = 0, // Empresas que se van a utilizar
-		k = 0, // Empresa que se va a analizar
+	int s = 0,			 // Cantidad de salidas
+		m = 0,			 // Cantidad de entradas
+		n = 0,			 // Empresas que se van a utilizar
+		k = 0,			 // Empresa que se va a analizar
 		iteraciones = 0; // Cantidad de iteraciones que se desean hacer
 
 	double espectroMinimo = 0.0, // Valor mínimo a buscar
-		espectroMaximo = 0.0, // Valor máximo a buscar
-		*theta; // Declaramos el puntero
-
+		espectroMaximo = 0.0,	// Valor máximo a buscar
+		*theta;					 // Declaramos el puntero
 
 	// Se asigna el tamaño del vector theta
-	theta = (double*) malloc(sizeof(double)*n);
+	theta = (double *)malloc(sizeof(double) * n);
 
 	/* COMIENZA LA PARTE 1 DEL ENUNCIADO */
 
@@ -44,8 +46,36 @@ int main()
 	printf("\n¿Cuántas iteraciones de búsqueda desea? ");
 	scanf("%i", &iteraciones);
 
-	// zona martin
-
-	
 	return 0;
+}
+
+// FUNCION GUARDAR MATRICES
+void guardarMatrices(double **matriz, int filas, int columnas, char *ruta)
+{
+	// DECLARACION E INICIALIZACION DE MEMORIA
+	FILE *f;
+	int i = 0;
+
+	// ABRO EL FICHERO
+	f = fopen(ruta, "wb");
+	if (f == NULL)
+	{
+		printf("ERROR, el fichero no existe o no se ha podido abrir\n");
+		return -1;
+	}
+	else
+	{
+		// GRABO LINIEA A LINEA LA MATRIZ
+		for (i = 0; i < filas; ++i)
+		{
+			fwrite(ruta[i], sizeof(unsigned char), filas, f);
+		}
+	}
+
+	// CIERRO EL FICHERO
+	if (fclose(f))
+	{
+		printf("Error: fichero NO CERRADO\n");
+		return 1;
+	}
 }
