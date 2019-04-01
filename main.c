@@ -52,7 +52,7 @@ int main()
 	scanf("%i", &iteraciones);
 
 	// zona martin
-
+	//ximo
 	
 	return 0;
 }
