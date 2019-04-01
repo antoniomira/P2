@@ -1,17 +1,26 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <string.h>
 #include <errno.h>
 #include <time.h>
 
+#define XMIN 0.0
+#define XMAX 10.0
+#define YMIN 100.0
+#define YMAX 500.0
+#define YFOLD "X.txt"
+#define YFOLD "Y.txt"
+
+// DEFINICION DE LAS FUNCIONES
+int guardarMatrices(double **matriz, int filas, int columnas, char *ruta);
 void crearMatriz(double matriz[10][10], int filas, int columnas,  double maximo, double minimo);
 
 int main()
 {
-    // Declaración de variables
     int s = 10, // Cantidad de salidas 
         m = 10, // Cantidad de entradas
+    // Declaración de variables
         n = 0, // Empresas que se van a utilizar
         k = 0, // Empresa que se va a analizar
         iteraciones = 0; // Cantidad de iteraciones que se desean hacer
@@ -57,6 +66,37 @@ int main()
     crearMatriz(matriz, n, m, espectroMaximo, espectroMinimo);
     
     return 0;
+}
+
+// FUNCION GUARDAR MATRICES
+int guardarMatrices(double **matriz, int filas, int columnas, char *ruta)
+{
+	// DECLARACION E INICIALIZACION DE MEMORIA
+	FILE *f;
+	int i = 0;
+
+	// ABRO EL FICHERO
+	f = fopen(ruta, "wb");
+	if (f == NULL)
+	{
+		printf("ERROR, el fichero no existe o no se ha podido abrir\n");
+		return -1;
+	}
+	else
+	{
+		// GRABO LINIEA A LINEA LA MATRIZ
+		for (i = 0; i < filas; ++i)
+		{
+			fwrite(ruta[i], sizeof(double), filas, f);
+		}
+	}
+
+	// CIERRO EL FICHERO
+	if (fclose(f))
+	{
+		printf("Error: fichero NO CERRADO\n");
+		return 1;
+	}
 }
 
 void crearMatriz(double matriz[10][10], int filas, int columnas,  double maximo, double minimo){
