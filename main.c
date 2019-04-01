@@ -86,3 +86,24 @@ int guardarMatrices(double **matriz, int filas, int columnas, char *ruta)
 		return 1;
 	}
 }
+
+void crearMatriz(double matriz[10][10], int filas, int columnas,  double maximo, double minimo){
+    double numero = 0;
+
+    for (int i=0; i<columnas; i++) //para desplazarse por las columnas
+    {
+        for (int j=0; j<filas; j++) //para desplazarse por las filas
+        {
+            numero = (double)rand()/(double)(RAND_MAX/maximo);
+
+            while(numero < minimo || numero > maximo){
+                numero = (double)rand()/(double)(RAND_MAX/maximo);
+            }
+
+            matriz[i][j]=numero; //Agrega numero aleatorio a la posicion ij de la matriz
+
+            printf("\t%.2lf",matriz[i][j]);//imprime elemento de la matriz en pantalla
+        }
+      printf("\n\n");//para dejar espacios entre filas.
+    }
+}
