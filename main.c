@@ -45,7 +45,7 @@ int main()
 	scanf("%i", &iteraciones);
 
 	// zona martin
-	//ximo
+	//zona ximo
 	
 	return 0;
 }
