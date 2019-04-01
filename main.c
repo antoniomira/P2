@@ -1,8 +1,8 @@
+#include <errno.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 #include <time.h>
 
 #define XMIN 0.0
@@ -13,25 +13,24 @@
 #define YFOLD "Y.txt"
 
 // DEFINICION DE LAS FUNCIONES
-int guardarMatrices(double **matriz, int filas, int columnas, char *ruta);
-void crearMatriz(double matriz[10][10], int filas, int columnas,  double maximo, double minimo);
+int guardarMatrices(double **matriz, int filas, char *ruta);
+void crearMatriz(double matriz[10][10], int filas, int columnas, double maximo, double minimo);
 
 int main()
 {
-    int s = 10, // Cantidad de salidas 
-        m = 10, // Cantidad de entradas
-    // Declaración de variables
-        n = 0, // Empresas que se van a utilizar
-        k = 0, // Empresa que se va a analizar
+    // DECLARACION E INICIALIZACION DE VARIABLES
+    int s = 10,          // Cantidad de salidas
+        m = 10,          // Cantidad de entradas
+        n = 0,           // Empresas que se van a utilizar
+        k = 0,           // Empresa que se va a analizar
         iteraciones = 0; // Cantidad de iteraciones que se desean hacer
 
     double espectroMinimo = 0.0, // Valor mínimo a buscar
-        espectroMaximo = 0.0, // Valor máximo a buscar
-        *theta; // Declaramos el puntero
-
+        espectroMaximo = 0.0,    // Valor máximo a buscar
+        *theta;                  // Declaramos el puntero
 
     // Se asigna el tamaño del vector theta
-    theta = (double*) malloc(sizeof(double)*n);
+    theta = (double *)malloc(sizeof(double) * n);
 
     //Se inicia la semilla aleatoria
     srand(time(NULL));
@@ -64,58 +63,60 @@ int main()
     //zona ximo
     double matriz[10][10];
     crearMatriz(matriz, n, m, espectroMaximo, espectroMinimo);
-    
+
     return 0;
 }
 
 // FUNCION GUARDAR MATRICES
-int guardarMatrices(double **matriz, int filas, int columnas, char *ruta)
+int guardarMatrices(double **matriz, int filas, char *ruta)
 {
-	// DECLARACION E INICIALIZACION DE MEMORIA
-	FILE *f;
-	int i = 0;
+    // DECLARACION E INICIALIZACION DE MEMORIA
+    FILE *f;
+    int i = 0;
 
-	// ABRO EL FICHERO
-	f = fopen(ruta, "wb");
-	if (f == NULL)
-	{
-		printf("ERROR, el fichero no existe o no se ha podido abrir\n");
-		return -1;
-	}
-	else
-	{
-		// GRABO LINIEA A LINEA LA MATRIZ
-		for (i = 0; i < filas; ++i)
-		{
-			fwrite(ruta[i], sizeof(double), filas, f);
-		}
-	}
+    // ABRO EL FICHERO
+    f = fopen(ruta, "wb");
+    if (f == NULL)
+    {
+        printf("ERROR, el fichero no existe o no se ha podido abrir\n");
+        return -1;
+    }
+    else
+    {
+        // GRABO LINIEA A LINEA LA MATRIZ
+        for (i = 0; i < filas; ++i)
+        {
+            fwrite(ruta[i], sizeof(double), filas, f);
+        }
+    }
 
-	// CIERRO EL FICHERO
-	if (fclose(f))
-	{
-		printf("Error: fichero NO CERRADO\n");
-		return 1;
-	}
+    // CIERRO EL FICHERO
+    if (fclose(f))
+    {
+        printf("Error: fichero NO CERRADO\n");
+        return 1;
+    }
 }
 
-void crearMatriz(double matriz[10][10], int filas, int columnas,  double maximo, double minimo){
+void crearMatriz(double matriz[10][10], int filas, int columnas, double maximo, double minimo)
+{
     double numero = 0;
 
-    for (int i=0; i<columnas; i++) //para desplazarse por las columnas
+    for (int i = 0; i < columnas; i++) //para desplazarse por las columnas
     {
-        for (int j=0; j<filas; j++) //para desplazarse por las filas
+        for (int j = 0; j < filas; j++) //para desplazarse por las filas
         {
-            numero = (double)rand()/(double)(RAND_MAX/maximo);
+            numero = (double)rand() / (double)(RAND_MAX / maximo);
 
-            while(numero < minimo || numero > maximo){
-                numero = (double)rand()/(double)(RAND_MAX/maximo);
+            while (numero < minimo || numero > maximo)
+            {
+                numero = (double)rand() / (double)(RAND_MAX / maximo);
             }
 
-            matriz[i][j]=numero; //Agrega numero aleatorio a la posicion ij de la matriz
+            matriz[i][j] = numero; //Agrega numero aleatorio a la posicion ij de la matriz
 
-            printf("\t%.2lf",matriz[i][j]);//imprime elemento de la matriz en pantalla
+            printf("\t%.2lf", matriz[i][j]); //imprime elemento de la matriz en pantalla
         }
-      printf("\n\n");//para dejar espacios entre filas.
+        printf("\n\n"); //para dejar espacios entre filas.
     }
 }
