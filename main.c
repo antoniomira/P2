@@ -184,9 +184,10 @@ void liberarMemoriaMatriz(double** matriz, int filas)
 }
 
 void rellenarTheta(double *theta, double minimo, double maximo, int tamano){
-	double numero=0;
+	int i = 0;
+    double numero=0;
 	printf("THETA: ");
-	for (int i=0; i<tamano; i++){
+	for (i=0; i<tamano; i++){
 		do {
 	            numero = (double)rand()/(double)(RAND_MAX/maximo);
 	        } while(!(numero > minimo && numero < maximo));
