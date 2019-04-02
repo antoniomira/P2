@@ -24,11 +24,11 @@ int main()
     int s = 10, // Cantidad de salidas 
         m = 10, // Cantidad de entradas
         n = 10, // Empresas que se van a utilizar
-        k = 0, // Empresa que se va a analizar
-        iteraciones = 0; // Cantidad de iteraciones que se desean hacer
+        k = 10, // Empresa que se va a analizar
+        iteraciones = 10; // Cantidad de iteraciones que se desean hacer
 
-    double espectroMinimo = 0.0, // Valor mínimo a buscar
-        espectroMaximo = 0.0, // Valor máximo a buscar
+    double espectroMinimo = 10.0, // Valor mínimo a buscar
+        espectroMaximo = 15.0, // Valor máximo a buscar
         *theta, // Declaramos el puntero
 		**X,
 		**Y;
@@ -44,7 +44,7 @@ int main()
     // Se piden los datos por pantalla del Usuario
 
     // Se pide la cantidad de empresas a generar
-    printf("¿Cuántas empresas se van a utilizar? ");
+    /*printf("¿Cuántas empresas se van a utilizar? ");
     scanf("%i", &n);
 
     // Se pide cual de ellas se va a generar
@@ -69,7 +69,7 @@ int main()
     // Se pide la cantidad de iteraciones que se va a realizar
     // Cantidad de iteraciones = a cantidad de soluciones
     printf("\n¿Cuántas iteraciones de búsqueda desea? ");
-    scanf("%i", &iteraciones);
+    scanf("%i", &iteraciones);*/
     X = declararMatriz(n,m);
 
 	// printf("Llega aqui");
