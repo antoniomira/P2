@@ -89,7 +89,7 @@ int main()
 }
 
 // FUNCION GUARDAR MATRICES
-int guardarMatrices(double **matriz, int filas, char *ruta)
+int guardarMatrices(double **matriz, int filas, int columnas, char *ruta)
 {
 	// DECLARACION E INICIALIZACION DE MEMORIA
 	FILE *f;
@@ -124,6 +124,7 @@ int guardarMatrices(double **matriz, int filas, char *ruta)
         printf("Error: fichero NO CERRADO\n");
         return 1;
     }
+    return 0;
 }
 
 void crearMatriz(double **matriz, int filas, int columnas,  double maximo, double minimo){
