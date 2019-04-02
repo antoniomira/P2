@@ -17,6 +17,7 @@ int guardarMatrices(double **matriz, int filas, int columnas, char *ruta);
 void crearMatriz(double **matriz, int filas, int columnas,  double maximo, double minimo);
 double** declararMatriz(int filas, int columnas);
 void liberarMemoriaMatriz(double** matriz, int filas);
+void rellenarTheta(double *theta, double minimo, double maximo, int tamano);
 
 int main()
 {
@@ -73,6 +74,8 @@ int main()
     scanf("%i", &iteraciones);
     X = declararMatriz(n,m);
 
+    rellenarTheta(theta, espectroMinimo, espectroMaximo, n);
+
 	// printf("Llega aqui");
     crearMatriz(X, n, m, XMAX, XMIN);
 
@@ -125,6 +128,7 @@ int guardarMatrices(double **matriz, int filas, int columnas, char *ruta)
 		printf("Error: fichero NO CERRADO\n");
 		return 1;
 	}
+	return 0;
 }
 
 void crearMatriz(double **matriz, int filas, int columnas,  double maximo, double minimo){
@@ -177,4 +181,19 @@ void liberarMemoriaMatriz(double** matriz, int filas)
 	}
 
 	free(matriz);
+}
+
+void rellenarTheta(double *theta, double minimo, double maximo, int tamano){
+	double numero=0;
+	printf("THETA: ");
+	for (int i=0; i<tamano; i++){
+		do {
+	            numero = (double)rand()/(double)(RAND_MAX/maximo);
+	        } while(!(numero > minimo && numero < maximo));
+
+	    theta[i]=numero; //Agrega numero aleatorio a la posicion i del vector
+
+        printf("\t%.2lf ",theta[i]);//imprime elemento del vector en pantalla
+	}
+	printf("\n\n");
 }
