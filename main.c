@@ -59,6 +59,14 @@ int main()
     printf("\nMáximo ");
     scanf("%lf", &espectroMaximo);
 
+    // Se introducen las entradas y salidas
+    printf("Introduce la cantidad de salidas ");
+    scanf("%i", &s);
+    printf("Introduce la cantidad de entradas ");
+    scanf("%i", &m);
+
+
+
     // Se pide la cantidad de iteraciones que se va a realizar
     // Cantidad de iteraciones = a cantidad de soluciones
     printf("\n¿Cuántas iteraciones de búsqueda desea? ");
@@ -124,9 +132,9 @@ void crearMatriz(double **matriz, int filas, int columnas,  double maximo, doubl
 		j = 0;
 	double numero = 0;
 
-    for (i=0; i<filas; i++) //para desplazarse por las columnas
+    for (i=0; i<filas; i++) //para desplazarse por las filas
     {
-        for (j=0; j<columnas; j++) //para desplazarse por las filas
+        for (j=0; j<columnas; j++) //para desplazarse por las columnas
         {
             do {
                 numero = (double)rand()/(double)(RAND_MAX/maximo);
