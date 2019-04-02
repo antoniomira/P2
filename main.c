@@ -64,24 +64,38 @@ int main()
     printf("Introduce la cantidad de entradas ");
     scanf("%i", &m);
 
-
-
     // Se pide la cantidad de iteraciones que se va a realizar
     // Cantidad de iteraciones = a cantidad de soluciones
     printf("\n¿Cuántas iteraciones de búsqueda desea? ");
     scanf("%i", &iteraciones);*/
+
+    printf("Cantidad de empresas: %i\n", n);
+    printf("Empresa elegida: %i\n", k);
+    printf("Espectro maximo: %lf\n", espectroMaximo);
+    printf("Espectro minimo: %lf\n", espectroMinimo);
+    printf("Cantidad de salidas: %i\n", s);
+    printf("Cantidad de entradas: %i\n", m);
+
+
     X = declararMatriz(n,m);
 
-	// printf("Llega aqui");
+	printf("Se crea la matriz X\n");
     crearMatriz(X, n, m, XMAX, XMIN);
 
+    printf("Se guarda la matrix X X\n");
 	guardarMatrices(X, n, m,XFOLD);
 
+
 	Y = declararMatriz(n,s);
+
+    printf("Se crea la matriz Y\n");
     crearMatriz(Y, n, s, YMAX, YMIN);
 
+    printf("Se guarda la matrix Y\n");
 	guardarMatrices(Y, n, s,YFOLD);
     
+
+    printf("Se libera la memoria");
 	liberarMemoriaMatriz(X, n);
 	liberarMemoriaMatriz(Y, n);
 
