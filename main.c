@@ -55,6 +55,14 @@ int main()
 		printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
 	}
 
+	quicksort(resultados, 0, 19);
+
+	printf("############################### Resultado de la ordenacio ######################\n");
+	for (i = 0; i < 20; i++)
+	{
+		printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
+	}
+
 	return 0;
 }
 
