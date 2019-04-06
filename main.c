@@ -19,7 +19,13 @@ double** declararMatriz(int filas, int columnas);
 void liberarMemoriaMatriz(double** matriz, int filas);
 void rellenarTheta(double *theta, double minimo, double maximo, int tamano);
 
+
 int main()
+{
+	
+}
+
+int main1()
 {
 	// Declaración e iniciación de variables
     int s = 10, // Cantidad de salidas 
