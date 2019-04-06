@@ -22,6 +22,7 @@ void rellenarTheta(double *theta, double minimo, double maximo, int tamano);
 
 int main()
 {
+	// Declaramos las variables para nuestros datos ficticios
 	res resultado;
 	double *vector1, *vector2, valorMaximo = 0;
 	int i = 0, j = 0, random1 = 0, random2 = 0;
@@ -30,18 +31,25 @@ int main()
 	// RESERVAMOS MEMORIA
 	res *resultados = (res *)malloc(20 * sizeof(res));
 
-	resultado.numeroEmpresa = 2;
-	resultado.numeroSolucion = 5;
-	resultado.S1 = vector1;
-	resultado.S2 = vector2;
-	resultado.valorMaximo = 22.3;
+	// Esta es una estructura de datos de ejemplo
+	resultado.numeroEmpresa = 2; // El numero de empresa que es. Tipo de datos: int.
+	resultado.numeroSolucion = 5; // El número de solución que es. Tipo de datos: int.
+	resultado.S1 = vector1; // El vector de resultados obtenido de la primera restricción. Tipo de datos: double[]
+	resultado.S2 = vector2; // El vector de resultados obtenido de la segunda restricción. Tipo de datos: double[].
+	resultado.valorMaximo = 22.3; // La suma de los dos vectores. Tipo de datos: double.
 
+	// Aquí se inicializa una vector de la estructura de datos de ejemplo.
 	for (i = 0; i < 20; i++)
 	{
+		// Se asignan las variables enteras.
 		resultados[i].numeroEmpresa = i;
 		resultados[i].numeroSolucion = i;
+
+		// Se reserva memoria para los dos vectores cada posición del vector.
 		resultados[i].S1 = (double *)malloc(20 * sizeof(double));
 		resultados[i].S2 = (double *)malloc(20 * sizeof(double));
+		
+		// Se generan los números y se calcula la suma total.
 		for (j = 0; j < 20; j++)
 		{
 			random1 = rand() % 9 + 1;
@@ -55,9 +63,12 @@ int main()
 		printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
 	}
 
+	// Se hace el algortimo de Quicksort.
 	quicksort(resultados, 0, 19);
 
-	printf("############################### Resultado de la ordenacio ######################\n");
+	// Se muestra el resultado de la ordenación
+	// SE TIENE QUE CAMBIAR ESTA PARTE POR LO QUE PONE EN EL PUNTO 5 del enunciado.
+	printf("############################### Resultado de la ordenacion ######################\n");
 	for (i = 0; i < 20; i++)
 	{
 		printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
@@ -66,6 +77,8 @@ int main()
 	return 0;
 }
 
+
+// Te olvidas de este main por ahora
 int main1()
 {
 	// Declaración e iniciación de variables
