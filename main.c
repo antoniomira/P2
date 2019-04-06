@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "estructuras.h"
 
 #define XMIN 0.0
 #define XMAX 10.0
@@ -21,6 +22,40 @@ void rellenarTheta(double *theta, double minimo, double maximo, int tamano);
 
 int main()
 {
+	res resultado;
+	double *vector1, *vector2, valorMaximo = 0;
+	int i = 0, j = 0, random1 = 0, random2 = 0;
+	srand(time(NULL));
+
+	// RESERVAMOS MEMORIA
+	res *resultados = (res *)malloc(20 * sizeof(res));
+
+	resultado.numeroEmpresa = 2;
+	resultado.numeroSolucion = 5;
+	resultado.S1 = vector1;
+	resultado.S2 = vector2;
+	resultado.valorMaximo = 22.3;
+
+	for (i = 0; i < 20; i++)
+	{
+		resultados[i].numeroEmpresa = i;
+		resultados[i].numeroSolucion = i;
+		resultados[i].S1 = (double *)malloc(20 * sizeof(double));
+		resultados[i].S2 = (double *)malloc(20 * sizeof(double));
+		for (j = 0; j < 20; j++)
+		{
+			random1 = rand() % 9 + 1;
+			random2 = rand() % 9 + 1;
+			resultados[i].S1[j] = random1;
+			resultados[i].S2[j] = random2;
+			valorMaximo += random1 + random2;
+		}
+		resultados[i].valorMaximo = valorMaximo;
+		valorMaximo = 0;
+		printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
+	}
+
+	return 0;
 }
 
 int main1()
