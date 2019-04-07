@@ -20,70 +20,28 @@ double **declararMatriz(int filas, int columnas);
 void liberarMemoriaMatriz(double **matriz, int filas);
 void rellenarTheta(double *theta, double minimo, double maximo, int tamano);
 
-
 int main()
 {
-	res resultado;
-	double *vector1, *vector2, valorMaximo = 0;
-	int i = 0, j = 0, random1 = 0, random2 = 0;
-	srand(time(NULL));
-
-	// RESERVAMOS MEMORIA
-	res *resultados = (res *)malloc(20 * sizeof(res));
-
-	resultado.numeroEmpresa = 2;
-	resultado.numeroSolucion = 5;
-	resultado.S1 = vector1;
-	resultado.S2 = vector2;
-	resultado.valorMaximo = 22.3;
-
-	for (i = 0; i < 20; i++)
-	{
-		resultados[i].numeroEmpresa = i;
-		resultados[i].numeroSolucion = i;
-		resultados[i].S1 = (double *)malloc(20 * sizeof(double));
-		resultados[i].S2 = (double *)malloc(20 * sizeof(double));
-		for (j = 0; j < 20; j++)
-		{
-			random1 = rand() % 9 + 1;
-			random2 = rand() % 9 + 1;
-			resultados[i].S1[j] = random1;
-			resultados[i].S2[j] = random2;
-			valorMaximo += random1 + random2;
-		}
-		resultados[i].valorMaximo = valorMaximo;
-		valorMaximo = 0;
-		printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
-	}
-
-	quicksort(resultados, 0, 19);
-
-	printf("############################### Resultado de la ordenacio ######################\n");
-	for (i = 0; i < 20; i++)
-	{
-		printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
-	}
-
-	return 0;
-}
-
-int main1()
-{
+	// Iteradores
+	int i, j, l;
 	// Declaración e iniciación de variables
-	int s = 10,			 // Cantidad de salidas
-		m = 10,			 // Cantidad de entradas
-		n = 10,			 // Empresas que se van a utilizar
+	int s = 0,			 // Cantidad de salidas
+		m = 0,			 // Cantidad de entradas
+		n = 0,			 // Empresas que se van a utilizar
 		k = 0,			 // Empresa que se va a analizar
-		iteraciones = 0; // Cantidad de iteraciones que se desean hacer
+		iteraciones = 0, // Cantidad de iteraciones que se desean hacer
+		valorNegativo = 0;
 
 	double espectroMinimo = 0.0, // Valor mínimo a buscar
 		espectroMaximo = 0.0,	// Valor máximo a buscar
-		*theta,					 // Declaramos el puntero
+		sumatorio = 0.0,
+		//*theta, // Declaramos el puntero
+		*S1,
+		*S2,
 		**X,
-		   **Y;
+		**Y;
 
-	// Se asigna el tamaño del vector theta
-	theta = (double *)malloc(sizeof(double) * n);
+	res *resultados;
 
 	//Se inicia la semilla aleatoria
 	srand(time(NULL));
@@ -107,12 +65,6 @@ int main1()
 	printf("\nMáximo ");
 	scanf("%lf", &espectroMaximo);
 
-	// Se pide la cantidad de iteraciones que se va a realizar
-	// Cantidad de iteraciones = a cantidad de soluciones
-	printf("\n¿Cuántas iteraciones de búsqueda desea? ");
-	scanf("%i", &iteraciones);
-	X = declararMatriz(n, m);
-
 	// Se introducen las entradas y salidas
 	printf("Introduce la cantidad de salidas ");
 	scanf("%i", &s);
@@ -123,20 +75,130 @@ int main1()
 	// Cantidad de iteraciones = a cantidad de soluciones
 	printf("\n¿Cuántas iteraciones de búsqueda desea? ");
 	scanf("%i", &iteraciones);
+
+	// Se reserva memoria a los vectores
+	/*S1 = (double *)malloc(sizeof(double) * n);
+	S2 = (double *)malloc(sizeof(double) * n);*/
+	resultados = (res *)malloc(sizeof(res) * iteraciones);
+
 	X = declararMatriz(n, m);
+	Y = declararMatriz(n, s);
 
-	rellenarTheta(theta, espectroMinimo, espectroMaximo, n);
-
-	// printf("Llega aqui");
+	// Las matrices son invariables
+	// Se almacenan los valores de la matriz X
 	crearMatriz(X, n, m, XMAX, XMIN);
 
-	guardarMatrices(X, n, m, XFOLD);
-
-	Y = declararMatriz(n, s);
+	// Se almacenan los valores de la matriz Y
 	crearMatriz(Y, n, s, YMAX, YMIN);
 
+	// Los valores de Theta cambian por cada iteración
+
+	for (l = 0; l < iteraciones; l++)
+	{
+
+		resultados[l].numeroSolucion = l;
+		resultados[l].numeroEmpresa = k;
+		resultados[l].theta = (double *)malloc(sizeof(double) * n);
+		resultados[l].S1 = (double *)malloc(sizeof(double) * s);
+		resultados[l].S2 = (double *)malloc(sizeof(double) * m);
+		resultados[l].restriccionIncumplida = 0;
+		rellenarTheta(resultados[l].theta, espectroMinimo, espectroMaximo, n);
+		// Se almacenan los valores del vector Theta
+		//theta = (double *)malloc(sizeof(double) * n);
+		//rellenarTheta(theta, espectroMinimo, espectroMaximo, n);
+
+		// Se ejecuta el algoritmo
+		resultados[l].sumatorioS1 = resultados[l].sumatorioS2 = 0;
+		
+		// Primera restricción
+		for (i = 0; i < s; i++)
+		{
+			// Se inicializa el sumatorio para cada ecuación
+			sumatorio = 0.0;
+			// printf("\n\nSumatorio %i: %.5lf",i, sumatorio);
+			// Se calcula el sumatorio
+			for (j = 0; j < n; j++)
+			{
+				sumatorio += (Y[j][i] * resultados[l].theta[j]);
+				// printf(" + (%.5lf * %.5lf)",Y[j][i], theta[j]);
+				// fflush(stdout);
+			}
+			resultados[l].S1[i] = sumatorio - Y[k][i];
+			resultados[l].sumatorioS1+=resultados[l].S1[i];
+
+			if (resultados[l].S1[i] < 0)
+			{
+				resultados[l].restriccionIncumplida = 1;
+			}
+			// printf("\nRestriccion%d --> S1[%d] = %.5f - %.5f = %.5f",i,i,sumatorio,Y[k][i],S1[i]);
+		}
+
+		// Segunda restricción
+		for (i = 0; i < m; i++)
+		{
+			// Se inicializa el sumatorio para cada ecuación
+			sumatorio = 0.0;
+			// printf("\n\nSumatorio %i: %.5lf",i, sumatorio);
+			// Se calcula el sumatorio
+			for (j = 0; j < n; j++)
+			{
+				sumatorio += (X[j][i] * resultados[l].theta[j]);
+				// printf(" + (%.5lf * %.5lf)",Y[j][i], theta[j]);
+				// fflush(stdout);
+			}
+			resultados[l].S2[i] = sumatorio - X[k][i];
+			resultados[l].sumatorioS2+=resultados[l].S2[i];
+
+			if (resultados[l].S2[i] < 0)
+			{
+				resultados[l].restriccionIncumplida = 1;
+			}
+			// printf("\nRestriccion%d --> S1[%d] = %.5f - %.5f = %.5f",i,i,sumatorio,Y[k][i],S1[i]);
+		}
+
+		resultados[l].valorMaximo = resultados[l].sumatorioS2+resultados[l].sumatorioS1;
+	}
+
+	for (l = 0; l < iteraciones; l++)
+	{
+
+		printf("Numero de la solucion: %i\n", resultados[l].numeroSolucion);
+		printf("Empresa elegida: %i\n", resultados[l].numeroEmpresa);
+		printf("Valor sumatorio S1: %.5lf\n", resultados[l].sumatorioS1);
+		printf("Valor sumatorio S2: %.5lf\n", resultados[l].sumatorioS2);
+		printf("Valor maximo: %.5lf\n", resultados[l].valorMaximo);
+
+
+		printf("Valor del vector Theta\n");
+		for (i = 0; i < n; i++)
+		{
+			printf("%.5lf  ", resultados[l].theta[i]);
+		}
+		printf("\n\n");
+
+		printf("Valor del vector S1\n");
+		for (i = 0; i < s; i++)
+		{
+			printf("%.5lf  ", resultados[l].S1[i]);
+		}
+		printf("\n\n");
+
+		printf("Valor del vector S2\n");
+		for (i = 0; i < m; i++)
+		{
+			printf("%.5lf  ", resultados[l].S2[i]);
+		}
+		printf("\n\n");
+	}
+
+	// Se guardan en disco las matrices
+	guardarMatrices(X, n, m, XFOLD);
 	guardarMatrices(Y, n, s, YFOLD);
 
+	// Se termina la ejecución y se libera memoria
+	//free(S1);
+	//free(S2);
+	//free(theta);
 	liberarMemoriaMatriz(X, n);
 	liberarMemoriaMatriz(Y, n);
 
@@ -186,7 +248,7 @@ void crearMatriz(double **matriz, int filas, int columnas, double maximo, double
 {
 	int i = 0,
 		j = 0;
-	double numero = 0;
+	double numero = 0.0;
 
 	for (i = 0; i < filas; i++) //para desplazarse por las filas
 	{
@@ -198,10 +260,7 @@ void crearMatriz(double **matriz, int filas, int columnas, double maximo, double
 			} while (!(numero > minimo && numero < maximo));
 
 			matriz[i][j] = numero; //Agrega numero aleatorio a la posicion ij de la matriz
-
-			printf("\t%.2lf", matriz[i][j]); //imprime elemento de la matriz en pantalla
 		}
-		printf("\n\n"); //para dejar espacios entre filas.
 	}
 }
 
@@ -211,13 +270,18 @@ double **declararMatriz(int filas, int columnas)
 	double **aux;
 
 	// Variables para iterar
-	int i = 0;
+	int i, j;
 
 	aux = (double **)malloc(sizeof(double *) * filas);
 
 	for (i = 0; i < filas; i++)
 	{
+		//printf("Valor de i: %i", i);
 		aux[i] = (double *)malloc(sizeof(double) * columnas);
+		for (j = 0; j < columnas; j++)
+		{
+			aux[i][j] = 0;
+		}
 	}
 
 	return aux;
@@ -238,12 +302,14 @@ void liberarMemoriaMatriz(double **matriz, int filas)
 void rellenarTheta(double *theta, double minimo, double maximo, int tamano)
 {
 	int i = 0;
-    double numero=0;
-	// printf("THETA: ");
-	for (i=0; i<tamano; i++){
-		do {
-	            numero = (double)rand()/(double)(RAND_MAX/maximo);
-	        } while(!(numero > minimo && numero < maximo));
+	double numero = 0;
+	printf("THETA: ");
+	for (i = 0; i < tamano; i++)
+	{
+		do
+		{
+			numero = (double)rand() / (double)(RAND_MAX / maximo);
+		} while (!(numero > minimo && numero < maximo));
 
 		theta[i] = numero; //Agrega numero aleatorio a la posicion i del vector
 
