@@ -1,17 +1,38 @@
 #include "estructuras.h"
 
 // ORDENAR NUMEROS DE FORMA DESCENDENTE
-void ordenar_numeros(res *V, int lon)
+// void ordenar_numeros(res *V, int lon)
+// {
+//     int Temp;
+//     for (int i = 0; i < lon; i++)
+//     {
+//         for (int j = 0; j < lon - 1; j++)
+//         {
+//             if (V[j].valorMaximo > V[j + 1].valorMaximo)
+//             { // cambia "<" a ">" para cambiar la manera de ordenar
+//                 Temp = V[j].valorMaximo;
+//                 V[j].valorMaximo = V[j + 1].valorMaximo;
+//                 V[j + 1].valorMaximo = Temp;
+//             }
+//         }
+//     }
+// }
+
+void ordenar_numeros1(int *V, int lon)
 {
     int Temp;
     for (int i = 0; i < lon; i++)
+    {
         for (int j = 0; j < lon - 1; j++)
-            if (V[j].valorMaximo < V[j + 1].valorMaximo)
+        {
+            if (V[j] < V[j + 1])
             { // cambia "<" a ">" para cambiar la manera de ordenar
-                Temp = V[j].valorMaximo;
-                V[j].valorMaximo = V[j + 1].valorMaximo;
-                V[j + 1].valorMaximo = Temp;
+                Temp = V[j];
+                V[j] = V[j + 1];
+                V[j + 1] = Temp;
             }
+        }
+    }
 }
 
 // FUNCION QUICKSORT

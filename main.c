@@ -52,17 +52,28 @@ int main()
 		}
 		resultados[i].valorMaximo = valorMaximo;
 		valorMaximo = 0;
-		printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
+		// printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
 	}
 
 	// quicksort(resultados, 0, 19);
-	ordenar_numeros(resultados, 20);
+
+	// prueba ##################################################
+	int *vector;
+	vector = (int *)malloc(20 * sizeof(int));
+	for (i = 0; i < 20; i++)
+	{
+		vector[i] = i;
+	}
+
+	ordenar_numeros1(vector, 20);
 
 	printf("############################### Resultado de la ordenacio ######################\n");
 	for (i = 0; i < 20; i++)
 	{
-		printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
+		// printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
+		printf("%i ", vector[i]);
 	}
+	printf("\n");
 
 	return 0;
 }
