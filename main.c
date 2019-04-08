@@ -19,6 +19,7 @@ void crearMatriz(double **matriz, int filas, int columnas, double maximo, double
 double **declararMatriz(int filas, int columnas);
 void liberarMemoriaMatriz(double **matriz, int filas);
 void rellenarTheta(double *theta, double minimo, double maximo, int tamano);
+void imprimirSolucion(res *resultados, int m, int s, int iteraciones);
 
 int main()
 {
@@ -26,6 +27,7 @@ int main()
 	res resultado;
 	double *vector1, *vector2, valorMaximo = 0;
 	int i = 0, j = 0, random1 = 0, random2 = 0;
+	int s =20, m=20, iteraciones=20;
 	srand(time(NULL));
 
 	// RESERVAMOS MEMORIA
@@ -73,6 +75,8 @@ int main()
 	{
 		printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
 	}
+
+	imprimirSolucion(resultados, s, m, iteraciones);
 
 	return 0;
 }
@@ -262,4 +266,37 @@ void rellenarTheta(double *theta, double minimo, double maximo, int tamano)
 		printf("\t%.2lf ", theta[i]); //imprime elemento del vector en pantalla
 	}
 	printf("\n\n");
+}
+
+void imprimirSolucion(res *resultados, int m, int s, int iteraciones){
+	int i, j, k, maxvalor;
+	if (m > s){
+		maxvalor = m;
+	}
+	else{
+		maxvalor = s;
+	}
+	printf("SOLUCIONES!!!!!!!\n");
+	printf("Num_sol\tEmpresa\tVal_fun\tS1i\tS2r\n");
+	for (i = 0; i < iteraciones; i++)
+	{
+		for (k = 0; k < maxvalor; k++)//Restriccion para S1
+		{
+			printf("%i\t%i\t%.2lf\t", resultados[i].numeroSolucion, resultados[i].numeroEmpresa, resultados[i].valorMaximo);
+			if (k < s)
+			{
+				printf("%.2lf\t", resultados[i].S1[k]);
+			}
+			else{
+				printf("-\t");
+			}
+			if (k < m)
+			{
+				printf("%.2lf\n", resultados[i].S2[k]);
+			}
+			else{
+				printf("-\n");
+			}
+		}
+	}
 }
