@@ -20,6 +20,7 @@ double **declararMatriz(int filas, int columnas);
 void liberarMemoriaMatriz(double **matriz, int filas);
 void rellenarTheta(double *theta, double minimo, double maximo, int tamano);
 void imprimirSolucion(res *resultados, int m, int s, int iteraciones);
+int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta);
 
 int main()
 {
@@ -76,7 +77,8 @@ int main()
 		printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
 	}
 
-	imprimirSolucion(resultados, s, m, iteraciones);
+	char *ruta;
+	escribirSolucion(resultados, s, m, iteraciones, ruta);
 
 	return 0;
 }
@@ -276,8 +278,8 @@ void imprimirSolucion(res *resultados, int m, int s, int iteraciones){
 	else{
 		maxvalor = s;
 	}
-	printf("SOLUCIONES!!!!!!!\n");
-	printf("Num_sol\tEmpresa\tVal_fun\tS1i\tS2r\n");
+	printf("SOLUCIONES\n\n");
+	printf("Num_sol\t|\tEmpresa\t|\tVal_fun\t|\tS1i\t|\tS2r\n\n");
 	for (i = 0; i < iteraciones; i++)
 	{
 		for (k = 0; k < maxvalor; k++)//Restriccion para S1
@@ -300,3 +302,63 @@ void imprimirSolucion(res *resultados, int m, int s, int iteraciones){
 		}
 	}
 }
+
+int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta){
+	// DECLARACION E INICIALIZACION DE MEMORIA
+	FILE *f;
+	int i, j, k, maxvalor;
+	ruta = "soluciones.txt";
+
+	// ABRO EL FICHERO
+	f = fopen(ruta, "w");
+	if (f == NULL)
+	{
+		printf("ERROR, el fichero no existe o no se ha podido abrir\n");
+		return -1;
+	}
+
+
+	if (m > s){
+		maxvalor = m;
+	}
+	else{
+		maxvalor = s;
+	}
+
+	//Grabo en el fichero las soluciones
+	fprintf(f, "SOLUCIONES\n\n");
+	fprintf(f, "Num_sol\t\tEmpresa\t\tVal_fun\t\tS1i\t\tS2r\n\n");
+
+	for (i = 0; i < iteraciones; i++)
+	{
+		for (k = 0; k < maxvalor; k++)//Restriccion para S1
+		{
+			fprintf(f, "%i\t\t%i\t\t%.2lf\t\t", resultados[i].numeroSolucion, resultados[i].numeroEmpresa, resultados[i].valorMaximo);
+			if (k < s)
+			{
+				fprintf(f, "%.2lf\t\t", resultados[i].S1[k]);
+			}
+			else{
+				fprintf(f, "-\t\t");
+			}
+			if (k < m)
+			{
+				fprintf(f, "%.2lf\n", resultados[i].S2[k]);
+			}
+			else{
+				fprintf(f, "-\n");
+			}
+		}
+	}
+
+	// CIERRO EL FICHERO
+	if (fclose(f))
+	{
+		printf("Error: fichero NO CERRADO\n");
+		return 1;
+	}
+	return 0;
+}
+
+
+
