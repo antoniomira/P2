@@ -20,7 +20,7 @@ double **declararMatriz(int filas, int columnas);
 void liberarMemoriaMatriz(double **matriz, int filas);
 void rellenarTheta(double *theta, double minimo, double maximo, int tamano);
 void imprimirSolucion(res *resultados, int m, int s, int iteraciones);
-int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta);
+int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta, double espectroMinimo, double espectroMaximo, int num_iteracion);
 
 int main()
 {
@@ -29,7 +29,10 @@ int main()
 	double *vector1, *vector2, valorMaximo = 0;
 	int i = 0, j = 0, random1 = 0, random2 = 0;
 	int s =20, m=20, iteraciones=20;
+	int num_iteracion = 1, repetir=0, eleccion=0;
+	double espectroMinimo = 0.0, espectroMaximo = 0.0;
 	srand(time(NULL));
+
 
 	// RESERVAMOS MEMORIA
 	res *resultados = (res *)malloc(20 * sizeof(res));
@@ -77,8 +80,28 @@ int main()
 		printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
 	}
 
-	char *ruta;
-	escribirSolucion(resultados, s, m, iteraciones, ruta);
+	char ruta[100];
+	escribirSolucion(resultados, s, m, iteraciones, ruta, espectroMinimo, espectroMaximo, num_iteracion);
+
+	//Preguntamos al usuario si desea repetir 
+	printf("\n¿Desea realizar otra iteracion? 1.-SI 2.-NO\n");
+	scanf("%i", &repetir);
+
+	if (repetir==1)
+	{
+		num_iteracion++;
+		printf("\n¿Desea cambiar los valores? 1.-SI 2.-NO\n");
+		scanf("%i", &eleccion);
+		if (eleccion==1)
+		{
+			// Se piden los valores máximos y mínimos del espectro
+			printf("\n¿En qué espectro del valores quiere buscar?");
+			printf("\nMínimo ");
+			scanf("%lf", &espectroMinimo);
+			printf("\nMáximo ");
+			scanf("%lf", &espectroMaximo);
+		}
+	}
 
 	return 0;
 }
@@ -303,11 +326,11 @@ void imprimirSolucion(res *resultados, int m, int s, int iteraciones){
 	}
 }
 
-int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta){
+int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta, double espectroMinimo, double espectroMaximo, int num_iteracion){
 	// DECLARACION E INICIALIZACION DE MEMORIA
 	FILE *f;
 	int i, j, k, maxvalor;
-	ruta = "soluciones.txt";
+	sprintf(ruta, "solucion_%i_%.1lf_%.1lf.txt", num_iteracion, espectroMinimo, espectroMaximo);
 
 	// ABRO EL FICHERO
 	f = fopen(ruta, "w");
