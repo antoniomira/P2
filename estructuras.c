@@ -18,10 +18,10 @@ void quicksort(res *V, int izq, int der)
 
         while (i <= d)
         {
-            while (V[i].valorMaximo < pivote)
+            while (V[i].valorMaximo > pivote)
                 i++;
 
-            while (V[d].valorMaximo > pivote)
+            while (V[d].valorMaximo < pivote)
                 d--;
 
             if (i <= d)

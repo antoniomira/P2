@@ -303,7 +303,7 @@ void rellenarTheta(double *theta, double minimo, double maximo, int tamano)
 {
 	int i = 0;
 	double numero = 0;
-	printf("THETA: ");
+	// printf("THETA: ");
 	for (i = 0; i < tamano; i++)
 	{
 		do
