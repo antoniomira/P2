@@ -80,8 +80,6 @@ int main()
 	scanf("%i", &iteraciones);
 
 	// Se reserva memoria a los vectores
-	/*S1 = (double *)malloc(sizeof(double) * n);
-	S2 = (double *)malloc(sizeof(double) * n);*/
 	resultados = (res *)malloc(sizeof(res) * iteraciones);
 
 	X = declararMatriz(n, m);
@@ -98,8 +96,6 @@ int main()
 
 	for (l = 0; l < iteraciones; l++)
 	{
-		printf("=========ITERACION %i=============\n",l);
-
 		resultados[l].numeroSolucion = l;
 		resultados[l].numeroEmpresa = k;
 		resultados[l].theta = (double *)malloc(sizeof(double) * n);
@@ -107,12 +103,9 @@ int main()
 		resultados[l].S2 = (double *)malloc(sizeof(double) * m);
 		resultados[l].restriccionIncumplida = 0;
 		rellenarTheta(resultados[l].theta, espectroMinimo, espectroMaximo, n);
-		// Se almacenan los valores del vector Theta
-		//theta = (double *)malloc(sizeof(double) * n);
-		//rellenarTheta(theta, espectroMinimo, espectroMaximo, n);
-		printf("Theta acaba de rellenarse bien\n");
-		// Se ejecuta el algoritmo
 		resultados[l].sumatorioS1 = resultados[l].sumatorioS2 = 0;
+
+		// Se ejecuta el algoritmo
 		
 		// Primera restricción
 		for (i = 0; i < s; i++)
@@ -164,39 +157,6 @@ int main()
 	}
 	
 	quicksort(resultados, 0, iteraciones-1);
-
-	
-	for (l = 0; l < iteraciones; l++)
-	{
-
-		printf("Numero de la solucion: %i\n", resultados[l].numeroSolucion);
-		//printf("Empresa elegida: %i\n", resultados[l].numeroEmpresa);
-		//printf("Valor sumatorio S1: %.5lf\n", resultados[l].sumatorioS1);
-		//printf("Valor sumatorio S2: %.5lf\n", resultados[l].sumatorioS2);
-		printf("Valor maximo: %.5lf\n", resultados[l].valorMaximo);
-
-
-		/*printf("Valor del vector Theta\n");
-		for (i = 0; i < n; i++)
-		{
-			printf("%.5lf  ", resultados[l].theta[i]);
-		}
-		printf("\n\n");
-
-		printf("Valor del vector S1\n");
-		for (i = 0; i < s; i++)
-		{
-			printf("%.5lf  ", resultados[l].S1[i]);
-		}
-		printf("\n\n");
-
-		printf("Valor del vector S2\n");
-		for (i = 0; i < m; i++)
-		{
-			printf("%.5lf  ", resultados[l].S2[i]);
-		}*/
-		printf("\n\n");
-	}
 
 	i = 0;
 
