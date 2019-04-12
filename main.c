@@ -95,6 +95,7 @@ int main()
 
 	for (l = 0; l < iteraciones; l++)
 	{
+		printf("=========ITERACION %i=============\n",l);
 
 		resultados[l].numeroSolucion = l;
 		resultados[l].numeroEmpresa = k;
@@ -106,7 +107,7 @@ int main()
 		// Se almacenan los valores del vector Theta
 		//theta = (double *)malloc(sizeof(double) * n);
 		//rellenarTheta(theta, espectroMinimo, espectroMaximo, n);
-
+		printf("Theta acaba de rellenarse bien\n");
 		// Se ejecuta el algoritmo
 		resultados[l].sumatorioS1 = resultados[l].sumatorioS2 = 0;
 		
@@ -158,7 +159,11 @@ int main()
 
 		resultados[l].valorMaximo = resultados[l].sumatorioS2+resultados[l].sumatorioS1;
 	}
+	
+	printf("Antes de quicksort\n");
+	quicksort(resultados, 1, iteraciones);
 
+	
 	for (l = 0; l < iteraciones; l++)
 	{
 
