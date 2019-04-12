@@ -52,26 +52,16 @@ int main()
 		}
 		resultados[i].valorMaximo = valorMaximo;
 		valorMaximo = 0;
-		// printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
+		printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
 	}
 
-	// quicksort(resultados, 0, 19);
+	quicksort(resultados, 0, 19);
 
-	// prueba ##################################################
-	int *vector;
-	vector = (int *)malloc(20 * sizeof(int));
+	printf("############################### Resultado de la ordenacion ######################\n");
 	for (i = 0; i < 20; i++)
 	{
-		vector[i] = i;
-	}
-
-	ordenar_numeros1(vector, 20);
-
-	printf("############################### Resultado de la ordenacio ######################\n");
-	for (i = 0; i < 20; i++)
-	{
-		// printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
-		printf("%i ", vector[i]);
+		printf("Empresa %i \nNumero de la solucion %i \nValor maximo %.2lf \n\n", resultados[i].numeroEmpresa, resultados[i].numeroSolucion, resultados[i].valorMaximo);
+		// printf("%i ", vector[i]);
 	}
 	printf("\n");
 
@@ -249,12 +239,14 @@ void liberarMemoriaMatriz(double **matriz, int filas)
 void rellenarTheta(double *theta, double minimo, double maximo, int tamano)
 {
 	int i = 0;
-    double numero=0;
+	double numero = 0;
 	// printf("THETA: ");
-	for (i=0; i<tamano; i++){
-		do {
-	            numero = (double)rand()/(double)(RAND_MAX/maximo);
-	        } while(!(numero > minimo && numero < maximo));
+	for (i = 0; i < tamano; i++)
+	{
+		do
+		{
+			numero = (double)rand() / (double)(RAND_MAX / maximo);
+		} while (!(numero > minimo && numero < maximo));
 
 		theta[i] = numero; //Agrega numero aleatorio a la posicion i del vector
 
