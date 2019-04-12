@@ -20,12 +20,36 @@ void crearMatriz(double **matriz, int filas, int columnas, double maximo, double
 double **declararMatriz(int filas, int columnas);
 void liberarMemoriaMatriz(double **matriz, int filas);
 void rellenarTheta(double *theta, double minimo, double maximo, int tamano);
+void imprimirSolucion(res *resultados, int m, int s, int iteraciones);
+int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta, double espectroMinimo, double espectroMaximo, int num_iteracion);
 void escribirMejorSolucion(char* ruta, res mejorSolucion, int n, int s, int m);
 
 int main()
 {
 	// Iteradores
 	int i, j, l, repeticiones=1;
+	int num_iteracion = 1, repetir=0, eleccion=0;
+	if (repetir==1)
+	{
+		printf("\n¿Desea cambiar los valores? 1.-SI 2.-NO\n");
+		num_iteracion++;
+
+	printf("\n¿Desea realizar otra iteracion? 1.-SI 2.-NO\n");
+	scanf("%i", &repetir);
+	escribirSolucion(resultados, s, m, iteraciones, ruta, espectroMinimo, espectroMaximo, num_iteracion);
+		scanf("%i", &eleccion);
+		if (eleccion==1)
+		{
+			// Se piden los valores máximos y mínimos del espectro
+			printf("\n¿En qué espectro del valores quiere buscar?");
+			printf("\nMínimo ");
+			scanf("%lf", &espectroMinimo);
+			printf("\nMáximo ");
+			scanf("%lf", &espectroMaximo);
+		}
+	}
+
+	return 0;
 	// Declaración e iniciación de variables
 	int s = 0,			 // Cantidad de salidas
 		m = 0,			 // Cantidad de entradas
@@ -371,3 +395,96 @@ void escribirMejorSolucion(char* ruta, res mejorSolucion, int n, int s, int m){
 		return;
 	}
 }
+
+void imprimirSolucion(res *resultados, int m, int s, int iteraciones){
+	int i, j, k, maxvalor;
+	if (m > s){
+		maxvalor = m;
+	}
+	else{
+		maxvalor = s;
+	}
+	printf("SOLUCIONES\n\n");
+	printf("Num_sol\t|\tEmpresa\t|\tVal_fun\t|\tS1i\t|\tS2r\n\n");
+	for (i = 0; i < iteraciones; i++)
+	{
+		for (k = 0; k < maxvalor; k++)//Restriccion para S1
+		{
+			printf("%i\t%i\t%.2lf\t", resultados[i].numeroSolucion, resultados[i].numeroEmpresa, resultados[i].valorMaximo);
+			if (k < s)
+			{
+				printf("%.2lf\t", resultados[i].S1[k]);
+			}
+			else{
+				printf("-\t");
+			}
+			if (k < m)
+			{
+				printf("%.2lf\n", resultados[i].S2[k]);
+			}
+			else{
+				printf("-\n");
+			}
+		}
+	}
+}
+
+int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta, double espectroMinimo, double espectroMaximo, int num_iteracion){
+	// DECLARACION E INICIALIZACION DE MEMORIA
+	FILE *f;
+	int i, j, k, maxvalor;
+	sprintf(ruta, "solucion_%i_%.1lf_%.1lf.txt", num_iteracion, espectroMinimo, espectroMaximo);
+
+	// ABRO EL FICHERO
+	f = fopen(ruta, "w");
+	if (f == NULL)
+	{
+		printf("ERROR, el fichero no existe o no se ha podido abrir\n");
+		return -1;
+	}
+
+
+	if (m > s){
+		maxvalor = m;
+	}
+	else{
+		maxvalor = s;
+	}
+
+	//Grabo en el fichero las soluciones
+	fprintf(f, "SOLUCIONES\n\n");
+	fprintf(f, "Num_sol\t\tEmpresa\t\tVal_fun\t\tS1i\t\tS2r\n\n");
+
+	for (i = 0; i < iteraciones; i++)
+	{
+		for (k = 0; k < maxvalor; k++)//Restriccion para S1
+		{
+			fprintf(f, "%i\t\t%i\t\t%.2lf\t\t", resultados[i].numeroSolucion, resultados[i].numeroEmpresa, resultados[i].valorMaximo);
+			if (k < s)
+			{
+				fprintf(f, "%.2lf\t\t", resultados[i].S1[k]);
+			}
+			else{
+				fprintf(f, "-\t\t");
+			}
+			if (k < m)
+			{
+				fprintf(f, "%.2lf\n", resultados[i].S2[k]);
+			}
+			else{
+				fprintf(f, "-\n");
+			}
+		}
+	}
+
+	// CIERRO EL FICHERO
+	if (fclose(f))
+	{
+		printf("Error: fichero NO CERRADO\n");
+		return 1;
+	}
+	return 0;
+}
+
+
+
