@@ -12,6 +12,7 @@
 #define YMAX 500.0
 #define XFOLD "X.txt"
 #define YFOLD "Y.txt"
+#define MAXFILE "MEJOR_"
 
 // DEFINICION DE LAS FUNCIONES
 int guardarMatrices(double **matriz, int filas, int columnas, char *ruta);
@@ -19,11 +20,12 @@ void crearMatriz(double **matriz, int filas, int columnas, double maximo, double
 double **declararMatriz(int filas, int columnas);
 void liberarMemoriaMatriz(double **matriz, int filas);
 void rellenarTheta(double *theta, double minimo, double maximo, int tamano);
+void escribirMejorSolucion(char* ruta, res mejorSolucion, int n, int s, int m);
 
 int main()
 {
 	// Iteradores
-	int i, j, l;
+	int i, j, l, repeticiones=1;
 	// Declaración e iniciación de variables
 	int s = 0,			 // Cantidad de salidas
 		m = 0,			 // Cantidad de entradas
@@ -42,6 +44,7 @@ int main()
 		**Y;
 
 	res *resultados;
+	char ruta[100];
 
 	//Se inicia la semilla aleatoria
 	srand(time(NULL));
@@ -195,6 +198,23 @@ int main()
 		printf("\n\n");
 	}
 
+	i = 0;
+
+	while(resultados[i].restriccionIncumplida != 0 && i < iteraciones)
+	{
+		i++;
+	}
+
+	if( i<iteraciones)
+	{
+		sprintf(ruta,"%s%i.txt", MAXFILE,repeticiones);
+		escribirMejorSolucion(ruta, resultados[i], n, s, m);
+	}
+	else
+	{
+		printf("No hay una solución que cumpla las restricciones\n");
+	}
+	
 	// Se guardan en disco las matrices
 	guardarMatrices(X, n, m, XFOLD);
 	guardarMatrices(Y, n, s, YFOLD);
@@ -320,4 +340,75 @@ void rellenarTheta(double *theta, double minimo, double maximo, int tamano)
 		//printf("\t%.2lf ", theta[i]); //imprime elemento del vector en pantalla
 	}
 	//printf("\n\n");
+}
+
+void escribirMejorSolucion(char* ruta, res mejorSolucion, int n, int s, int m){
+	// Puntero al fichero a abrir
+	FILE *f;
+	f = fopen(ruta, "w");
+
+	if(f == NULL)
+		return;
+	
+	int valorMax = 0, i,j,k;
+
+	if(m > s)
+	{
+		valorMax = m;
+	}
+	else
+	{
+		valorMax = s;
+	}
+
+	if(valorMax < n)
+	{
+		valorMax = n;
+	}
+	fprintf(f,"%20s\t%20s\t%20s\t%20s\n","Maximo", "Theta", "Sr", "Si");
+
+	for ( i = 0; i < 100; i++)
+	fprintf(f,"=");
+	
+	fprintf(f,"\n");
+	
+	for ( i = 0; i < valorMax; i++)
+	{
+		fprintf(f,"%20.5lf\t",mejorSolucion.valorMaximo);
+		if(i < n)
+		{
+			fprintf(f,"%20.5lf\t",mejorSolucion.theta[i]);
+		}
+		else
+		{
+			fprintf(f,"%20s\t","-");
+		}
+
+		if(i < s)
+		{
+			fprintf(f,"%20.5lf\t",mejorSolucion.S1[i]);
+		}
+		else
+		{
+			fprintf(f,"%20s\t","-");
+		}
+
+		if(i < m)
+		{
+			fprintf(f,"%20.5lf",mejorSolucion.S2[i]);
+		}
+		else
+		{
+			fprintf(f,"%20s","-");
+		}
+		
+		fprintf(f,"\n");
+	}
+
+	// CIERRO EL FICHERO
+	if (fclose(f))
+	{
+		printf("Error: fichero NO CERRADO\n");
+		return;
+	}
 }
