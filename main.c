@@ -160,21 +160,20 @@ int main()
 		resultados[l].valorMaximo = resultados[l].sumatorioS2+resultados[l].sumatorioS1;
 	}
 	
-	printf("Antes de quicksort\n");
-	quicksort(resultados, 1, iteraciones);
+	quicksort(resultados, 0, iteraciones-1);
 
 	
 	for (l = 0; l < iteraciones; l++)
 	{
 
 		printf("Numero de la solucion: %i\n", resultados[l].numeroSolucion);
-		printf("Empresa elegida: %i\n", resultados[l].numeroEmpresa);
-		printf("Valor sumatorio S1: %.5lf\n", resultados[l].sumatorioS1);
-		printf("Valor sumatorio S2: %.5lf\n", resultados[l].sumatorioS2);
+		//printf("Empresa elegida: %i\n", resultados[l].numeroEmpresa);
+		//printf("Valor sumatorio S1: %.5lf\n", resultados[l].sumatorioS1);
+		//printf("Valor sumatorio S2: %.5lf\n", resultados[l].sumatorioS2);
 		printf("Valor maximo: %.5lf\n", resultados[l].valorMaximo);
 
 
-		printf("Valor del vector Theta\n");
+		/*printf("Valor del vector Theta\n");
 		for (i = 0; i < n; i++)
 		{
 			printf("%.5lf  ", resultados[l].theta[i]);
@@ -192,7 +191,7 @@ int main()
 		for (i = 0; i < m; i++)
 		{
 			printf("%.5lf  ", resultados[l].S2[i]);
-		}
+		}*/
 		printf("\n\n");
 	}
 
@@ -318,7 +317,7 @@ void rellenarTheta(double *theta, double minimo, double maximo, int tamano)
 
 		theta[i] = numero; //Agrega numero aleatorio a la posicion i del vector
 
-		printf("\t%.2lf ", theta[i]); //imprime elemento del vector en pantalla
+		//printf("\t%.2lf ", theta[i]); //imprime elemento del vector en pantalla
 	}
-	printf("\n\n");
+	//printf("\n\n");
 }
