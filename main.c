@@ -22,34 +22,13 @@ void liberarMemoriaMatriz(double **matriz, int filas);
 void rellenarTheta(double *theta, double minimo, double maximo, int tamano);
 void imprimirSolucion(res *resultados, int m, int s, int iteraciones);
 int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta, double espectroMinimo, double espectroMaximo, int num_iteracion);
-void escribirMejorSolucion(char* ruta, res mejorSolucion, int n, int s, int m);
+void escribirMejorSolucion(char *ruta, res mejorSolucion, int n, int s, int m);
 
 int main()
 {
 	// Iteradores
-	int i, j, l, repeticiones=1;
-	int num_iteracion = 1, repetir=0, eleccion=0;
-	if (repetir==1)
-	{
-		printf("\n¿Desea cambiar los valores? 1.-SI 2.-NO\n");
-		num_iteracion++;
-
-	printf("\n¿Desea realizar otra iteracion? 1.-SI 2.-NO\n");
-	scanf("%i", &repetir);
-	escribirSolucion(resultados, s, m, iteraciones, ruta, espectroMinimo, espectroMaximo, num_iteracion);
-		scanf("%i", &eleccion);
-		if (eleccion==1)
-		{
-			// Se piden los valores máximos y mínimos del espectro
-			printf("\n¿En qué espectro del valores quiere buscar?");
-			printf("\nMínimo ");
-			scanf("%lf", &espectroMinimo);
-			printf("\nMáximo ");
-			scanf("%lf", &espectroMaximo);
-		}
-	}
-
-	return 0;
+	int i, j, l, repeticiones = 1;
+	int num_iteracion = 1, repetir = 0, eleccion = 0;
 	// Declaración e iniciación de variables
 	int s = 0,			 // Cantidad de salidas
 		m = 0,			 // Cantidad de entradas
@@ -61,11 +40,11 @@ int main()
 	double espectroMinimo = 0.0, // Valor mínimo a buscar
 		espectroMaximo = 0.0,	// Valor máximo a buscar
 		sumatorio = 0.0,
-		//*theta, // Declaramos el puntero
+		   //*theta, // Declaramos el puntero
 		*S1,
-		*S2,
-		**X,
-		**Y;
+		   *S2,
+		   **X,
+		   **Y;
 
 	res *resultados;
 	char ruta[100];
@@ -130,7 +109,7 @@ int main()
 		resultados[l].sumatorioS1 = resultados[l].sumatorioS2 = 0;
 
 		// Se ejecuta el algoritmo
-		
+
 		// Primera restricción
 		for (i = 0; i < s; i++)
 		{
@@ -145,7 +124,7 @@ int main()
 				// fflush(stdout);
 			}
 			resultados[l].S1[i] = sumatorio - Y[k][i];
-			resultados[l].sumatorioS1+=resultados[l].S1[i];
+			resultados[l].sumatorioS1 += resultados[l].S1[i];
 
 			if (resultados[l].S1[i] < 0)
 			{
@@ -168,7 +147,7 @@ int main()
 				// fflush(stdout);
 			}
 			resultados[l].S2[i] = sumatorio - X[k][i];
-			resultados[l].sumatorioS2+=resultados[l].S2[i];
+			resultados[l].sumatorioS2 += resultados[l].S2[i];
 
 			if (resultados[l].S2[i] < 0)
 			{
@@ -177,21 +156,21 @@ int main()
 			// printf("\nRestriccion%d --> S1[%d] = %.5f - %.5f = %.5f",i,i,sumatorio,Y[k][i],S1[i]);
 		}
 
-		resultados[l].valorMaximo = resultados[l].sumatorioS2+resultados[l].sumatorioS1;
+		resultados[l].valorMaximo = resultados[l].sumatorioS2 + resultados[l].sumatorioS1;
 	}
-	
-	quicksort(resultados, 0, iteraciones-1);
+
+	quicksort(resultados, 0, iteraciones - 1);
 
 	i = 0;
 
-	while(resultados[i].restriccionIncumplida != 0 && i < iteraciones)
+	while (resultados[i].restriccionIncumplida != 0 && i < iteraciones)
 	{
 		i++;
 	}
 
-	if( i<iteraciones)
+	if (i < iteraciones)
 	{
-		sprintf(ruta,"%s%i.txt", MAXFILE,repeticiones);
+		sprintf(ruta, "%s%i.txt", MAXFILE, repeticiones);
 		escribirMejorSolucion(ruta, resultados[i], n, s, m);
 	}
 	else
@@ -199,6 +178,29 @@ int main()
 		printf("No hay una solución que cumpla las restricciones\n");
 	}
 	
+
+	if (repetir == 1)
+	{
+		printf("\n¿Desea cambiar los valores? 1.-SI 2.-NO\n");
+		num_iteracion++;
+
+		printf("\n¿Desea realizar otra iteracion? 1.-SI 2.-NO\n");
+		scanf("%i", &repetir);
+		escribirSolucion(resultados, s, m, iteraciones, ruta, espectroMinimo, espectroMaximo, num_iteracion);
+		scanf("%i", &eleccion);
+		if (eleccion == 1)
+		{
+			// Se piden los valores máximos y mínimos del espectro
+			printf("\n¿En qué espectro del valores quiere buscar?");
+			printf("\nMínimo ");
+			scanf("%lf", &espectroMinimo);
+			printf("\nMáximo ");
+			scanf("%lf", &espectroMaximo);
+		}
+	}
+
+	return 0;
+
 	// Se guardan en disco las matrices
 	guardarMatrices(X, n, m, XFOLD);
 	guardarMatrices(Y, n, s, YFOLD);
@@ -325,17 +327,18 @@ void rellenarTheta(double *theta, double minimo, double maximo, int tamano)
 	//printf("\n\n");
 }
 
-void escribirMejorSolucion(char* ruta, res mejorSolucion, int n, int s, int m){
+void escribirMejorSolucion(char *ruta, res mejorSolucion, int n, int s, int m)
+{
 	// Puntero al fichero a abrir
 	FILE *f;
 	f = fopen(ruta, "w");
 
-	if(f == NULL)
+	if (f == NULL)
 		return;
-	
-	int valorMax = 0, i,j,k;
 
-	if(m > s)
+	int valorMax = 0, i, j, k;
+
+	if (m > s)
 	{
 		valorMax = m;
 	}
@@ -344,48 +347,48 @@ void escribirMejorSolucion(char* ruta, res mejorSolucion, int n, int s, int m){
 		valorMax = s;
 	}
 
-	if(valorMax < n)
+	if (valorMax < n)
 	{
 		valorMax = n;
 	}
-	fprintf(f,"%20s\t%20s\t%20s\t%20s\n","Maximo", "Theta", "Sr", "Si");
+	fprintf(f, "%20s\t%20s\t%20s\t%20s\n", "Maximo", "Theta", "Sr", "Si");
 
-	for ( i = 0; i < 100; i++)
-	fprintf(f,"=");
-	
-	fprintf(f,"\n");
-	
-	for ( i = 0; i < valorMax; i++)
+	for (i = 0; i < 100; i++)
+		fprintf(f, "=");
+
+	fprintf(f, "\n");
+
+	for (i = 0; i < valorMax; i++)
 	{
-		fprintf(f,"%20.5lf\t",mejorSolucion.valorMaximo);
-		if(i < n)
+		fprintf(f, "%20.5lf\t", mejorSolucion.valorMaximo);
+		if (i < n)
 		{
-			fprintf(f,"%20.5lf\t",mejorSolucion.theta[i]);
+			fprintf(f, "%20.5lf\t", mejorSolucion.theta[i]);
 		}
 		else
 		{
-			fprintf(f,"%20s\t","-");
+			fprintf(f, "%20s\t", "-");
 		}
 
-		if(i < s)
+		if (i < s)
 		{
-			fprintf(f,"%20.5lf\t",mejorSolucion.S1[i]);
+			fprintf(f, "%20.5lf\t", mejorSolucion.S1[i]);
 		}
 		else
 		{
-			fprintf(f,"%20s\t","-");
+			fprintf(f, "%20s\t", "-");
 		}
 
-		if(i < m)
+		if (i < m)
 		{
-			fprintf(f,"%20.5lf",mejorSolucion.S2[i]);
+			fprintf(f, "%20.5lf", mejorSolucion.S2[i]);
 		}
 		else
 		{
-			fprintf(f,"%20s","-");
+			fprintf(f, "%20s", "-");
 		}
-		
-		fprintf(f,"\n");
+
+		fprintf(f, "\n");
 	}
 
 	// CIERRO EL FICHERO
@@ -396,40 +399,46 @@ void escribirMejorSolucion(char* ruta, res mejorSolucion, int n, int s, int m){
 	}
 }
 
-void imprimirSolucion(res *resultados, int m, int s, int iteraciones){
+void imprimirSolucion(res *resultados, int m, int s, int iteraciones)
+{
 	int i, j, k, maxvalor;
-	if (m > s){
+	if (m > s)
+	{
 		maxvalor = m;
 	}
-	else{
+	else
+	{
 		maxvalor = s;
 	}
 	printf("SOLUCIONES\n\n");
 	printf("Num_sol\t|\tEmpresa\t|\tVal_fun\t|\tS1i\t|\tS2r\n\n");
 	for (i = 0; i < iteraciones; i++)
 	{
-		for (k = 0; k < maxvalor; k++)//Restriccion para S1
+		for (k = 0; k < maxvalor; k++) //Restriccion para S1
 		{
 			printf("%i\t%i\t%.2lf\t", resultados[i].numeroSolucion, resultados[i].numeroEmpresa, resultados[i].valorMaximo);
 			if (k < s)
 			{
 				printf("%.2lf\t", resultados[i].S1[k]);
 			}
-			else{
+			else
+			{
 				printf("-\t");
 			}
 			if (k < m)
 			{
 				printf("%.2lf\n", resultados[i].S2[k]);
 			}
-			else{
+			else
+			{
 				printf("-\n");
 			}
 		}
 	}
 }
 
-int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta, double espectroMinimo, double espectroMaximo, int num_iteracion){
+int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta, double espectroMinimo, double espectroMaximo, int num_iteracion)
+{
 	// DECLARACION E INICIALIZACION DE MEMORIA
 	FILE *f;
 	int i, j, k, maxvalor;
@@ -443,11 +452,12 @@ int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta,
 		return -1;
 	}
 
-
-	if (m > s){
+	if (m > s)
+	{
 		maxvalor = m;
 	}
-	else{
+	else
+	{
 		maxvalor = s;
 	}
 
@@ -457,21 +467,23 @@ int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta,
 
 	for (i = 0; i < iteraciones; i++)
 	{
-		for (k = 0; k < maxvalor; k++)//Restriccion para S1
+		for (k = 0; k < maxvalor; k++) //Restriccion para S1
 		{
 			fprintf(f, "%i\t\t%i\t\t%.2lf\t\t", resultados[i].numeroSolucion, resultados[i].numeroEmpresa, resultados[i].valorMaximo);
 			if (k < s)
 			{
 				fprintf(f, "%.2lf\t\t", resultados[i].S1[k]);
 			}
-			else{
+			else
+			{
 				fprintf(f, "-\t\t");
 			}
 			if (k < m)
 			{
 				fprintf(f, "%.2lf\n", resultados[i].S2[k]);
 			}
-			else{
+			else
+			{
 				fprintf(f, "-\n");
 			}
 		}
@@ -485,6 +497,3 @@ int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta,
 	}
 	return 0;
 }
-
-
-
