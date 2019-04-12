@@ -1,15 +1,18 @@
 #include "estructuras.h"
+#include <stdio.h>
 
 // FUNCION QUICKSORT
 void quicksort(res *V, int izq, int der)
 {
+
     // DECLARAMOS E INICIALIZAMOS LAS VARIABLES
     int i = 0, d = 0, p = 0;
-    double pivote = 0;
+    double pivote = 0.0;
 
     // CALCULAMOS EL PIVOTE
     p = seleccionar_pivote(V, izq, der);
-
+    
+    
     if (p > 0)
     {
         pivote = V[p].valorMaximo;
@@ -18,10 +21,10 @@ void quicksort(res *V, int izq, int der)
 
         while (i <= d)
         {
-            while (V[i].valorMaximo < pivote)
+            while (V[i].valorMaximo > pivote)
                 i++;
 
-            while (V[d].valorMaximo > pivote)
+            while (V[d].valorMaximo < pivote)
                 d--;
 
             if (i <= d)
@@ -48,18 +51,19 @@ int seleccionar_pivote(res *V, int izq, int der)
 
     // CALCULO EL MEDIO DEL VECTOR
     if (der % 2 != 0)
-        medio = V[(izq + der) / 2 + 1].valorMaximo;
+        medio = (izq + der) / 2 + 1;
     else
-        medio = V[(izq + der) / 2].valorMaximo;
+        medio = (izq + der) / 2;
 
+    
     // CALCULAMOS EL PIVOTE
-    if ((izq <= V[medio].valorMaximo && V[medio].valorMaximo <= der) || (der <= V[medio].valorMaximo && V[medio].valorMaximo <= izq))
-        return V[medio].valorMaximo;
+    if ((izq <= medio && medio <= der) || (der <= medio && medio <= izq))
+        return medio;
 
-    if ((der <= izq && izq <= V[medio].valorMaximo) || (V[medio].valorMaximo <= izq && izq <= der))
+    if ((der <= izq && izq <= medio) || (medio <= izq && izq <= der))
         return izq;
 
-    if ((V[medio].valorMaximo <= der && der <= izq) || (izq <= der && der <= V[medio].valorMaximo))
+    if ((medio <= der && der <= izq) || (izq <= der && der <= medio))
         return der;
 
     return 0;
