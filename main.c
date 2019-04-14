@@ -20,12 +20,15 @@ void crearMatriz(double **matriz, int filas, int columnas, double maximo, double
 double **declararMatriz(int filas, int columnas);
 void liberarMemoriaMatriz(double **matriz, int filas);
 void rellenarTheta(double *theta, double minimo, double maximo, int tamano);
-void escribirMejorSolucion(char* ruta, res mejorSolucion, int n, int s, int m);
+void imprimirSolucion(res *resultados, int m, int s, int iteraciones);
+int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta, double espectroMinimo, double espectroMaximo, int num_iteracion);
+void escribirMejorSolucion(char *ruta, res mejorSolucion, int n, int s, int m);
 
 int main()
 {
 	// Iteradores
-	int i, j, l, repeticiones=1;
+	int i, j, l, repeticiones = 1;
+	int num_iteracion = 1, repetir = 0, eleccion = 0;
 	// Declaración e iniciación de variables
 	int s = 0,			 // Cantidad de salidas
 		m = 0,			 // Cantidad de entradas
@@ -37,11 +40,11 @@ int main()
 	double espectroMinimo = 0.0, // Valor mínimo a buscar
 		espectroMaximo = 0.0,	// Valor máximo a buscar
 		sumatorio = 0.0,
-		//*theta, // Declaramos el puntero
+		   //*theta, // Declaramos el puntero
 		*S1,
-		*S2,
-		**X,
-		**Y;
+		   *S2,
+		   **X,
+		   **Y;
 
 	res *resultados;
 	char ruta[100];
@@ -93,88 +96,115 @@ int main()
 	crearMatriz(Y, n, s, YMAX, YMIN);
 
 	// Los valores de Theta cambian por cada iteración
-
-	for (l = 0; l < iteraciones; l++)
+	do
 	{
-		resultados[l].numeroSolucion = l;
-		resultados[l].numeroEmpresa = k;
-		resultados[l].theta = (double *)malloc(sizeof(double) * n);
-		resultados[l].S1 = (double *)malloc(sizeof(double) * s);
-		resultados[l].S2 = (double *)malloc(sizeof(double) * m);
-		resultados[l].restriccionIncumplida = 0;
-		rellenarTheta(resultados[l].theta, espectroMinimo, espectroMaximo, n);
-		resultados[l].sumatorioS1 = resultados[l].sumatorioS2 = 0;
+		for (l = 0; l < iteraciones; l++)
+		{
+			resultados[l].numeroSolucion = l;
+			resultados[l].numeroEmpresa = k;
+			resultados[l].theta = (double *)malloc(sizeof(double) * n);
+			resultados[l].S1 = (double *)malloc(sizeof(double) * s);
+			resultados[l].S2 = (double *)malloc(sizeof(double) * m);
+			resultados[l].restriccionIncumplida = 0;
+			rellenarTheta(resultados[l].theta, espectroMinimo, espectroMaximo, n);
+			resultados[l].sumatorioS1 = resultados[l].sumatorioS2 = 0;
 
-		// Se ejecuta el algoritmo
+			// Se ejecuta el algoritmo
+
+			// Primera restricción
+			for (i = 0; i < s; i++)
+			{
+				// Se inicializa el sumatorio para cada ecuación
+				sumatorio = 0.0;
+				// printf("\n\nSumatorio %i: %.5lf",i, sumatorio);
+				// Se calcula el sumatorio
+				for (j = 0; j < n; j++)
+				{
+					sumatorio += (Y[j][i] * resultados[l].theta[j]);
+					// printf(" + (%.5lf * %.5lf)",Y[j][i], theta[j]);
+					// fflush(stdout);
+				}
+				resultados[l].S1[i] = sumatorio - Y[k][i];
+				resultados[l].sumatorioS1 += resultados[l].S1[i];
+
+				if (resultados[l].S1[i] < 0)
+				{
+					resultados[l].restriccionIncumplida = 1;
+				}
+				// printf("\nRestriccion%d --> S1[%d] = %.5f - %.5f = %.5f",i,i,sumatorio,Y[k][i],S1[i]);
+			}
+
+			// Segunda restricción
+			for (i = 0; i < m; i++)
+			{
+				// Se inicializa el sumatorio para cada ecuación
+				sumatorio = 0.0;
+				// printf("\n\nSumatorio %i: %.5lf",i, sumatorio);
+				// Se calcula el sumatorio
+				for (j = 0; j < n; j++)
+				{
+					sumatorio += (X[j][i] * resultados[l].theta[j]);
+					// printf(" + (%.5lf * %.5lf)",Y[j][i], theta[j]);
+					// fflush(stdout);
+				}
+				resultados[l].S2[i] = sumatorio - X[k][i];
+				resultados[l].sumatorioS2 += resultados[l].S2[i];
+
+				if (resultados[l].S2[i] < 0)
+				{
+					resultados[l].restriccionIncumplida = 1;
+				}
+				// printf("\nRestriccion%d --> S1[%d] = %.5f - %.5f = %.5f",i,i,sumatorio,Y[k][i],S1[i]);
+			}
+
+			resultados[l].valorMaximo = resultados[l].sumatorioS2 + resultados[l].sumatorioS1;
+		}
+
+		quicksort(resultados, 0, iteraciones - 1);
+
+		i = 0;
+
+		while (resultados[i].restriccionIncumplida != 0 && i < iteraciones)
+		{
+			i++;
+		}
+
+		if (i < iteraciones)
+		{
+			sprintf(ruta, "%s%i.txt", MAXFILE, num_iteracion);
+			escribirMejorSolucion(ruta, resultados[i], n, s, m);
+		}
+		else
+		{
+			printf("No hay una solución que cumpla las restricciones\n");
+		}
 		
-		// Primera restricción
-		for (i = 0; i < s; i++)
-		{
-			// Se inicializa el sumatorio para cada ecuación
-			sumatorio = 0.0;
-			// printf("\n\nSumatorio %i: %.5lf",i, sumatorio);
-			// Se calcula el sumatorio
-			for (j = 0; j < n; j++)
-			{
-				sumatorio += (Y[j][i] * resultados[l].theta[j]);
-				// printf(" + (%.5lf * %.5lf)",Y[j][i], theta[j]);
-				// fflush(stdout);
-			}
-			resultados[l].S1[i] = sumatorio - Y[k][i];
-			resultados[l].sumatorioS1+=resultados[l].S1[i];
+		escribirSolucion(resultados, s, m, iteraciones, ruta, espectroMinimo, espectroMaximo, num_iteracion);
 
-			if (resultados[l].S1[i] < 0)
+		//Preguntamos al usuario si desea repetir 
+		printf("\n¿Desea realizar otra iteracion? 1.-SI 2.-NO\n");
+		scanf("%i", &repetir);
+
+		if (repetir == 1)
+		{
+			printf("\n¿Desea cambiar los valores? 1.-SI 2.-NO\n");
+			num_iteracion++;
+
+			scanf("%i", &eleccion);
+			if (eleccion == 1)
 			{
-				resultados[l].restriccionIncumplida = 1;
+				// Se piden los valores máximos y mínimos del espectro
+				printf("\n¿En qué espectro del valores quiere buscar?");
+				printf("\nMínimo ");
+				scanf("%lf", &espectroMinimo);
+				printf("\nMáximo ");
+				scanf("%lf", &espectroMaximo);
 			}
-			// printf("\nRestriccion%d --> S1[%d] = %.5f - %.5f = %.5f",i,i,sumatorio,Y[k][i],S1[i]);
 		}
 
-		// Segunda restricción
-		for (i = 0; i < m; i++)
-		{
-			// Se inicializa el sumatorio para cada ecuación
-			sumatorio = 0.0;
-			// printf("\n\nSumatorio %i: %.5lf",i, sumatorio);
-			// Se calcula el sumatorio
-			for (j = 0; j < n; j++)
-			{
-				sumatorio += (X[j][i] * resultados[l].theta[j]);
-				// printf(" + (%.5lf * %.5lf)",Y[j][i], theta[j]);
-				// fflush(stdout);
-			}
-			resultados[l].S2[i] = sumatorio - X[k][i];
-			resultados[l].sumatorioS2+=resultados[l].S2[i];
-
-			if (resultados[l].S2[i] < 0)
-			{
-				resultados[l].restriccionIncumplida = 1;
-			}
-			// printf("\nRestriccion%d --> S1[%d] = %.5f - %.5f = %.5f",i,i,sumatorio,Y[k][i],S1[i]);
-		}
-
-		resultados[l].valorMaximo = resultados[l].sumatorioS2+resultados[l].sumatorioS1;
-	}
+	} while (repetir==1);
 	
-	quicksort(resultados, 0, iteraciones-1);
 
-	i = 0;
-
-	while(resultados[i].restriccionIncumplida != 0 && i < iteraciones)
-	{
-		i++;
-	}
-
-	if( i<iteraciones)
-	{
-		sprintf(ruta,"%s%i.txt", MAXFILE,repeticiones);
-		escribirMejorSolucion(ruta, resultados[i], n, s, m);
-	}
-	else
-	{
-		printf("No hay una solución que cumpla las restricciones\n");
-	}
-	
 	// Se guardan en disco las matrices
 	guardarMatrices(X, n, m, XFOLD);
 	guardarMatrices(Y, n, s, YFOLD);
@@ -301,17 +331,18 @@ void rellenarTheta(double *theta, double minimo, double maximo, int tamano)
 	//printf("\n\n");
 }
 
-void escribirMejorSolucion(char* ruta, res mejorSolucion, int n, int s, int m){
+void escribirMejorSolucion(char *ruta, res mejorSolucion, int n, int s, int m)
+{
 	// Puntero al fichero a abrir
 	FILE *f;
 	f = fopen(ruta, "w");
 
-	if(f == NULL)
+	if (f == NULL)
 		return;
-	
-	int valorMax = 0, i,j,k;
 
-	if(m > s)
+	int valorMax = 0, i, j, k;
+
+	if (m > s)
 	{
 		valorMax = m;
 	}
@@ -320,48 +351,48 @@ void escribirMejorSolucion(char* ruta, res mejorSolucion, int n, int s, int m){
 		valorMax = s;
 	}
 
-	if(valorMax < n)
+	if (valorMax < n)
 	{
 		valorMax = n;
 	}
-	fprintf(f,"%20s\t%20s\t%20s\t%20s\n","Maximo", "Theta", "Sr", "Si");
+	fprintf(f, "%20s\t%20s\t%20s\t%20s\n", "Maximo", "Theta", "Sr", "Si");
 
-	for ( i = 0; i < 100; i++)
-	fprintf(f,"=");
-	
-	fprintf(f,"\n");
-	
-	for ( i = 0; i < valorMax; i++)
+	for (i = 0; i < 100; i++)
+		fprintf(f, "=");
+
+	fprintf(f, "\n");
+
+	for (i = 0; i < valorMax; i++)
 	{
-		fprintf(f,"%20.5lf\t",mejorSolucion.valorMaximo);
-		if(i < n)
+		fprintf(f, "%20.5lf\t", mejorSolucion.valorMaximo);
+		if (i < n)
 		{
-			fprintf(f,"%20.5lf\t",mejorSolucion.theta[i]);
+			fprintf(f, "%20.5lf\t", mejorSolucion.theta[i]);
 		}
 		else
 		{
-			fprintf(f,"%20s\t","-");
+			fprintf(f, "%20s\t", "-");
 		}
 
-		if(i < s)
+		if (i < s)
 		{
-			fprintf(f,"%20.5lf\t",mejorSolucion.S1[i]);
+			fprintf(f, "%20.5lf\t", mejorSolucion.S1[i]);
 		}
 		else
 		{
-			fprintf(f,"%20s\t","-");
+			fprintf(f, "%20s\t", "-");
 		}
 
-		if(i < m)
+		if (i < m)
 		{
-			fprintf(f,"%20.5lf",mejorSolucion.S2[i]);
+			fprintf(f, "%20.5lf", mejorSolucion.S2[i]);
 		}
 		else
 		{
-			fprintf(f,"%20s","-");
+			fprintf(f, "%20s", "-");
 		}
-		
-		fprintf(f,"\n");
+
+		fprintf(f, "\n");
 	}
 
 	// CIERRO EL FICHERO
@@ -370,4 +401,103 @@ void escribirMejorSolucion(char* ruta, res mejorSolucion, int n, int s, int m){
 		printf("Error: fichero NO CERRADO\n");
 		return;
 	}
+}
+
+void imprimirSolucion(res *resultados, int m, int s, int iteraciones)
+{
+	int i, j, k, maxvalor;
+	if (m > s)
+	{
+		maxvalor = m;
+	}
+	else
+	{
+		maxvalor = s;
+	}
+	printf("SOLUCIONES\n\n");
+	printf("Num_sol\t|\tEmpresa\t|\tVal_fun\t|\tS1i\t|\tS2r\n\n");
+	for (i = 0; i < iteraciones; i++)
+	{
+		for (k = 0; k < maxvalor; k++) //Restriccion para S1
+		{
+			printf("%i\t%i\t%.2lf\t", resultados[i].numeroSolucion, resultados[i].numeroEmpresa, resultados[i].valorMaximo);
+			if (k < s)
+			{
+				printf("%.2lf\t", resultados[i].S1[k]);
+			}
+			else
+			{
+				printf("-\t");
+			}
+			if (k < m)
+			{
+				printf("%.2lf\n", resultados[i].S2[k]);
+			}
+			else
+			{
+				printf("-\n");
+			}
+		}
+	}
+}
+
+int escribirSolucion(res *resultados, int m, int s, int iteraciones, char *ruta, double espectroMinimo, double espectroMaximo, int num_iteracion)
+{
+	// DECLARACION E INICIALIZACION DE MEMORIA
+	FILE *f;
+	int i, j, k, maxvalor;
+	sprintf(ruta, "solucion_%i_%.1lf_%.1lf.txt", num_iteracion, espectroMinimo, espectroMaximo);
+
+	// ABRO EL FICHERO
+	f = fopen(ruta, "w");
+	if (f == NULL)
+	{
+		printf("ERROR, el fichero no existe o no se ha podido abrir\n");
+		return -1;
+	}
+
+	if (m > s)
+	{
+		maxvalor = m;
+	}
+	else
+	{
+		maxvalor = s;
+	}
+
+	//Grabo en el fichero las soluciones
+	fprintf(f, "SOLUCIONES\n\n");
+	fprintf(f, "Num_sol\t\tEmpresa\t\tVal_fun\t\tS1i\t\tS2r\n\n");
+
+	for (i = 0; i < iteraciones; i++)
+	{
+		for (k = 0; k < maxvalor; k++) //Restriccion para S1
+		{
+			fprintf(f, "%i\t\t%i\t\t%.2lf\t\t", resultados[i].numeroSolucion, resultados[i].numeroEmpresa, resultados[i].valorMaximo);
+			if (k < s)
+			{
+				fprintf(f, "%.2lf\t\t", resultados[i].S1[k]);
+			}
+			else
+			{
+				fprintf(f, "-\t\t");
+			}
+			if (k < m)
+			{
+				fprintf(f, "%.2lf\n", resultados[i].S2[k]);
+			}
+			else
+			{
+				fprintf(f, "-\n");
+			}
+		}
+	}
+
+	// CIERRO EL FICHERO
+	if (fclose(f))
+	{
+		printf("Error: fichero NO CERRADO\n");
+		return 1;
+	}
+	return 0;
 }
