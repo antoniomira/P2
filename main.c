@@ -96,110 +96,114 @@ int main()
 	crearMatriz(Y, n, s, YMAX, YMIN);
 
 	// Los valores de Theta cambian por cada iteración
-
-	for (l = 0; l < iteraciones; l++)
+	do
 	{
-		resultados[l].numeroSolucion = l;
-		resultados[l].numeroEmpresa = k;
-		resultados[l].theta = (double *)malloc(sizeof(double) * n);
-		resultados[l].S1 = (double *)malloc(sizeof(double) * s);
-		resultados[l].S2 = (double *)malloc(sizeof(double) * m);
-		resultados[l].restriccionIncumplida = 0;
-		rellenarTheta(resultados[l].theta, espectroMinimo, espectroMaximo, n);
-		resultados[l].sumatorioS1 = resultados[l].sumatorioS2 = 0;
-
-		// Se ejecuta el algoritmo
-
-		// Primera restricción
-		for (i = 0; i < s; i++)
+		for (l = 0; l < iteraciones; l++)
 		{
-			// Se inicializa el sumatorio para cada ecuación
-			sumatorio = 0.0;
-			// printf("\n\nSumatorio %i: %.5lf",i, sumatorio);
-			// Se calcula el sumatorio
-			for (j = 0; j < n; j++)
-			{
-				sumatorio += (Y[j][i] * resultados[l].theta[j]);
-				// printf(" + (%.5lf * %.5lf)",Y[j][i], theta[j]);
-				// fflush(stdout);
-			}
-			resultados[l].S1[i] = sumatorio - Y[k][i];
-			resultados[l].sumatorioS1 += resultados[l].S1[i];
+			resultados[l].numeroSolucion = l;
+			resultados[l].numeroEmpresa = k;
+			resultados[l].theta = (double *)malloc(sizeof(double) * n);
+			resultados[l].S1 = (double *)malloc(sizeof(double) * s);
+			resultados[l].S2 = (double *)malloc(sizeof(double) * m);
+			resultados[l].restriccionIncumplida = 0;
+			rellenarTheta(resultados[l].theta, espectroMinimo, espectroMaximo, n);
+			resultados[l].sumatorioS1 = resultados[l].sumatorioS2 = 0;
 
-			if (resultados[l].S1[i] < 0)
+			// Se ejecuta el algoritmo
+
+			// Primera restricción
+			for (i = 0; i < s; i++)
 			{
-				resultados[l].restriccionIncumplida = 1;
+				// Se inicializa el sumatorio para cada ecuación
+				sumatorio = 0.0;
+				// printf("\n\nSumatorio %i: %.5lf",i, sumatorio);
+				// Se calcula el sumatorio
+				for (j = 0; j < n; j++)
+				{
+					sumatorio += (Y[j][i] * resultados[l].theta[j]);
+					// printf(" + (%.5lf * %.5lf)",Y[j][i], theta[j]);
+					// fflush(stdout);
+				}
+				resultados[l].S1[i] = sumatorio - Y[k][i];
+				resultados[l].sumatorioS1 += resultados[l].S1[i];
+
+				if (resultados[l].S1[i] < 0)
+				{
+					resultados[l].restriccionIncumplida = 1;
+				}
+				// printf("\nRestriccion%d --> S1[%d] = %.5f - %.5f = %.5f",i,i,sumatorio,Y[k][i],S1[i]);
 			}
-			// printf("\nRestriccion%d --> S1[%d] = %.5f - %.5f = %.5f",i,i,sumatorio,Y[k][i],S1[i]);
+
+			// Segunda restricción
+			for (i = 0; i < m; i++)
+			{
+				// Se inicializa el sumatorio para cada ecuación
+				sumatorio = 0.0;
+				// printf("\n\nSumatorio %i: %.5lf",i, sumatorio);
+				// Se calcula el sumatorio
+				for (j = 0; j < n; j++)
+				{
+					sumatorio += (X[j][i] * resultados[l].theta[j]);
+					// printf(" + (%.5lf * %.5lf)",Y[j][i], theta[j]);
+					// fflush(stdout);
+				}
+				resultados[l].S2[i] = sumatorio - X[k][i];
+				resultados[l].sumatorioS2 += resultados[l].S2[i];
+
+				if (resultados[l].S2[i] < 0)
+				{
+					resultados[l].restriccionIncumplida = 1;
+				}
+				// printf("\nRestriccion%d --> S1[%d] = %.5f - %.5f = %.5f",i,i,sumatorio,Y[k][i],S1[i]);
+			}
+
+			resultados[l].valorMaximo = resultados[l].sumatorioS2 + resultados[l].sumatorioS1;
 		}
 
-		// Segunda restricción
-		for (i = 0; i < m; i++)
-		{
-			// Se inicializa el sumatorio para cada ecuación
-			sumatorio = 0.0;
-			// printf("\n\nSumatorio %i: %.5lf",i, sumatorio);
-			// Se calcula el sumatorio
-			for (j = 0; j < n; j++)
-			{
-				sumatorio += (X[j][i] * resultados[l].theta[j]);
-				// printf(" + (%.5lf * %.5lf)",Y[j][i], theta[j]);
-				// fflush(stdout);
-			}
-			resultados[l].S2[i] = sumatorio - X[k][i];
-			resultados[l].sumatorioS2 += resultados[l].S2[i];
+		quicksort(resultados, 0, iteraciones - 1);
 
-			if (resultados[l].S2[i] < 0)
-			{
-				resultados[l].restriccionIncumplida = 1;
-			}
-			// printf("\nRestriccion%d --> S1[%d] = %.5f - %.5f = %.5f",i,i,sumatorio,Y[k][i],S1[i]);
+		i = 0;
+
+		while (resultados[i].restriccionIncumplida != 0 && i < iteraciones)
+		{
+			i++;
 		}
 
-		resultados[l].valorMaximo = resultados[l].sumatorioS2 + resultados[l].sumatorioS1;
-	}
+		if (i < iteraciones)
+		{
+			sprintf(ruta, "%s%i.txt", MAXFILE, num_iteracion);
+			escribirMejorSolucion(ruta, resultados[i], n, s, m);
+		}
+		else
+		{
+			printf("No hay una solución que cumpla las restricciones\n");
+		}
+		
+		escribirSolucion(resultados, s, m, iteraciones, ruta, espectroMinimo, espectroMaximo, num_iteracion);
 
-	quicksort(resultados, 0, iteraciones - 1);
-
-	i = 0;
-
-	while (resultados[i].restriccionIncumplida != 0 && i < iteraciones)
-	{
-		i++;
-	}
-
-	if (i < iteraciones)
-	{
-		sprintf(ruta, "%s%i.txt", MAXFILE, repeticiones);
-		escribirMejorSolucion(ruta, resultados[i], n, s, m);
-	}
-	else
-	{
-		printf("No hay una solución que cumpla las restricciones\n");
-	}
-	
-
-	if (repetir == 1)
-	{
-		printf("\n¿Desea cambiar los valores? 1.-SI 2.-NO\n");
-		num_iteracion++;
-
+		//Preguntamos al usuario si desea repetir 
 		printf("\n¿Desea realizar otra iteracion? 1.-SI 2.-NO\n");
 		scanf("%i", &repetir);
-		escribirSolucion(resultados, s, m, iteraciones, ruta, espectroMinimo, espectroMaximo, num_iteracion);
-		scanf("%i", &eleccion);
-		if (eleccion == 1)
-		{
-			// Se piden los valores máximos y mínimos del espectro
-			printf("\n¿En qué espectro del valores quiere buscar?");
-			printf("\nMínimo ");
-			scanf("%lf", &espectroMinimo);
-			printf("\nMáximo ");
-			scanf("%lf", &espectroMaximo);
-		}
-	}
 
-	return 0;
+		if (repetir == 1)
+		{
+			printf("\n¿Desea cambiar los valores? 1.-SI 2.-NO\n");
+			num_iteracion++;
+
+			scanf("%i", &eleccion);
+			if (eleccion == 1)
+			{
+				// Se piden los valores máximos y mínimos del espectro
+				printf("\n¿En qué espectro del valores quiere buscar?");
+				printf("\nMínimo ");
+				scanf("%lf", &espectroMinimo);
+				printf("\nMáximo ");
+				scanf("%lf", &espectroMaximo);
+			}
+		}
+
+	} while (repetir==1);
+	
 
 	// Se guardan en disco las matrices
 	guardarMatrices(X, n, m, XFOLD);
